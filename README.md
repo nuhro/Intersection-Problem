@@ -1,4 +1,4 @@
-# MATLAB HS12 – Research Plan (Template)
+﻿# MATLAB HS12 – Research Plan (Template)
 (text between brackets to be removed)
 
 > * Group Name: (be creative!)
@@ -15,6 +15,7 @@ We want to compare first one simple traffic intersection, either organised by a 
 two or three intersections one after another in a line. 
 When I go buying bread for breakfast, I have to cross the Albisriederplatz in Zürich. During rush hour in the morning and evening,
 sometimes the whole day, 
+asasasasasasass
 
 ## The Model
 
