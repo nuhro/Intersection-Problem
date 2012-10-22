@@ -38,28 +38,37 @@ depending on the car flow and the waiting space there is before a crossroad.
 (At the end of the project you want to find the answer to these questions)
 (Formulate a few, clear questions. Articulate them in sub-questions, from the more general to the more specific. )
 
+The most interesting question we want to answer is whether the roundabout or the crossroad with lights is more efficients in terms of the parameters stated above.
+Comparing the behaviour in dependence of the flow rates. Which model seems more secure for the participants.
+If we have time: is there a perfect car's velocity that optimizes the flow? Is our model with a two line crossroad & roundabout working more efficient/giving remarkable different results? Are two or three intersections of the same type changing the results that we obtained by just one crossroad/roundabout, what is more efficient?
+
 ## Expected Results
 
 (What are the answers to the above questions that you expect to find before starting your research?)
 
+We expect the roundabout to be more efficient for low flux rates whereas the crossroad is better for higher numbers of incoming cars.
+We also expect that reducing the velocity a small bit before the roundabout makes it more efficient in real life due to people's psychology, but we are sure, that we cannot include that in our simulation.
 
 ## References 
 
 (Add the bibliographic references you intend to use)
 (Explain possible extension to the above models)
 (Code / Projects Reports of the previous year)
-mehrspurig
+
+1.  Luka Pi˘skorec, Simon Soller. <i>The effectiveness of signalisation and the priority to the right
+simulated with Cellular Automata</i>. 2009.
+2.  Nicola Bellomo, Christian Dogbe. <i>On the Modeling of Traffic and Crowds: A Survey of Models, Speculations, and Perspectives</i>. Society for Industrial and Applied Mathematics, 2011.
+
+Extensions: two-lane model, Schreckenberg-model
 
 ## Research Methods
 
 (Cellular Automata, Agent-Based Model, Continuous Modeling...) (If you are not sure here: 1. Consult your colleagues, 2. ask the teachers, 3. remember that you can change it afterwards)
 
-cellular automata 
+Cellular Automata
 
 first: cars drive in a stop-and-go manner without accelarating and braking time, 
 but with reaction time when entering or leaving the intersection. 
-
-possible and more realistic extension with Schreckenberg-model
 
 ## Other
 
