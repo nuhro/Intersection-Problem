@@ -38,7 +38,7 @@ depending on the car flow and the waiting space there is before a crossroad.
 (At the end of the project you want to find the answer to these questions)
 (Formulate a few, clear questions. Articulate them in sub-questions, from the more general to the more specific. )
 
-The most interesting question we want to answer is whether the roundabout or the crossroad with lights is more efficients in terms of the parameters stated above.
+The most interesting question we want to answer is whether the roundabout or the crossroad with lights is more efficient in terms of the parameters stated above.
 Comparing the behaviour in dependence of the flow rates. Which model seems more secure for the participants.
 If we have time: is there a perfect car's velocity that optimizes the flow? Is our model with a two line crossroad & roundabout working more efficient/giving remarkable different results? Are two or three intersections of the same type changing the results that we obtained by just one crossroad/roundabout, what is more efficient?
 
@@ -55,9 +55,12 @@ We also expect that reducing the velocity a small bit before the roundabout make
 (Explain possible extension to the above models)
 (Code / Projects Reports of the previous year)
 
-1.  Luka Pi˘skorec, Simon Soller. <i>The effectiveness of signalisation and the priority to the right
+1.  Luka Piškorec, Simon Soller. <i>The effectiveness of signalisation and the priority to the right
 simulated with Cellular Automata</i>. 2009.
 2.  Nicola Bellomo, Christian Dogbe. <i>On the Modeling of Traffic and Crowds: A Survey of Models, Speculations, and Perspectives</i>. Society for Industrial and Applied Mathematics, 2011.
+3.  Elmar Brockfeld, Robert Barlovic, Andreas Schadschneider, Michael Schreckenberg: <i>Optimizing traffic lights in a cellular automaton model for city traffic</i>. Physical Review E, Volume 64, 2001.
+4.  Tony Wood, Bastian Bücheler. <i>Traffic Flow Comparison of Roundabouts and Crossroads</i>. 2010
+5.  Dominik Eugster, Roman Fuchs. <i>Comparison of single-lane and two-lane roundabouts</i>. 2010
 
 Extensions: two-lane model, Schreckenberg-model
 
