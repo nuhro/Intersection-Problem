@@ -1,9 +1,9 @@
 ﻿# MATLAB HS12 – Research Plan (Template)
 (text between brackets to be removed)
 
-> * Group Name: (be creative!)
+> * Group Name: Crossrounds
 > * Group participants names: Marcel Arikan, Nuhro Ego
-> * Project Title: (can be changed)
+> * Project Title: Intersections with pedestrians
 
 ## General Introduction
 
@@ -12,7 +12,7 @@
 (Put the problem into a historical context, from what does it originate? Are there already some proposed solutions?)
 
 We want to compare first one traffic intersection, either organised by a crossroad with a traffic light or by a roundabout. 
-Secondly we add crosswalks with uniform distributed pedestrians and from time to time a tram the flow in a roundabout partially. 
+Secondly we add crosswalks immediately before the intersection with uniform distributed pedestrians and from time to time a tram interrupts the flow in the roundabout partially. 
 If we are capable we'd like to place two or three of the same type of intersection one after another in a line. 
 
 When I go buying bread for breakfast, I have to cross the Albisriederplatz in Zürich. It's a crossing with four streets, 
@@ -38,16 +38,14 @@ depending on the car flow and the waiting space there is before a crossroad.
 (At the end of the project you want to find the answer to these questions)
 (Formulate a few, clear questions. Articulate them in sub-questions, from the more general to the more specific. )
 
-The most interesting question we want to answer is whether the roundabout or the crossroad with lights is more efficient in terms of the parameters stated above.
-Comparing the behaviour in dependence of the flow rates. Which model seems more secure for the participants.
-If we have time: is there a perfect car's velocity that optimizes the flow? Is our model with a two line crossroad & roundabout working more efficient/giving remarkable different results? Are two or three intersections of the same type changing the results that we obtained by just one crossroad/roundabout, what is more efficient?
+The most interesting question we want to answer is whether the roundabout or the crossroad with lights is more efficient in terms of the parameters stated above.Comparing the behaviour in dependence of the flow rates. At which pedestrian/tram rate the crossroad has advantage? Is our model with a two line crossroad & roundabout working more efficient/giving remarkable different results? Are two or three intersections of the same type changing the results that we obtained by just one crossroad/roundabout? Especially when the lights are linked in case of the crossroads. Which model seems more secure for the participants? 
+
 
 ## Expected Results
 
 (What are the answers to the above questions that you expect to find before starting your research?)
 
-We expect the roundabout to be more efficient for low flux rates whereas the crossroad is better for higher numbers of incoming cars.
-We also expect that reducing the velocity a small bit before the roundabout makes it more efficient in real life due to people's psychology, but we are sure, that we cannot include that in our simulation.
+We expect a single roundabout to be more efficient, especially for low car flux rates. But with increasing pedestrian/tram flux the crossroad gets better. Moreover in case of two or three intersections the crossroad has advantages in keeping maximum car speed and periodical maximum flux(Schreckenberg-model), whereas with roundabouts cars have to slow down and the flux will be randomized after. We also expect that reducing the velocity a small bit before the roundabout makes it more efficient in real life due to people's psychology, so they would let the car have priority, but it's difficult to include that in our simulation.
 
 ## References 
 
@@ -68,10 +66,11 @@ Extensions: two-lane model, Schreckenberg-model
 
 (Cellular Automata, Agent-Based Model, Continuous Modeling...) (If you are not sure here: 1. Consult your colleagues, 2. ask the teachers, 3. remember that you can change it afterwards)
 
-Cellular Automata
+We'll use Cellular Automata as the groups before. 
 
-first: cars drive in a stop-and-go manner without accelarating and braking time, 
-but with reaction time when entering or leaving the intersection. 
+In a first step the cars drive in a stop-and-go manner without accelarating and braking time, 
+but with reaction/pseudo-accelerating/braking time when entering or leaving(only roundabout) the intersection. The great unrealistic disadvantage this way is that the cars haven't got different velocities.  
+In a second step we try to implement the Schreckenberg-model. 
 
 ## Other
 
