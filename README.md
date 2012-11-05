@@ -2,7 +2,7 @@
 (text between brackets to be removed)
 
 > * Group Name: Crossrounds
-> * Group participants names: Marcel Arikan, Nuhro Ego
+> * Group participants names: Marcel Arikan, Nuhro Ego, Ralf Kohrt
 > * Project Title: Intersections with pedestrians
 
 ## General Introduction
