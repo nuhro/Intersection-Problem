@@ -35,6 +35,17 @@ function traffic
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%
+% define global variables
+global NOCAR 
+global CAR
+global BUILDING
+global PEDESTRIAN
+BUILDING = 0    %%the colour for buildings
+NOCAR = 1
+CAR = 0.4
+PEDESTRIAN = 0.8
+
 close all;
 
 %promt city road configutation
