@@ -30,21 +30,24 @@ function traffic
 %roundabouts the traffic distribution (cars around roundabouts or around
 %crossroads) versus traffic density is also plotted.
 %
-%A project by Bastian Buecheler and Tony Wood in the GeSS course "Modelling
+%A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
+%and Simulation of Social Systems with MATLAB" at ETH Zurich.
+%Fall 2012
+%Matlab code is based on code from Bastian Buecheler and Tony Wood in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%
 % define global variables
-global NOCAR 
-global CAR
-global BUILDING
-global PEDESTRIAN
-BUILDING = 0    %%the colour for buildings
-NOCAR = 1
-CAR = 0.4
-PEDESTRIAN = 0.8
+global NOCAR;
+global CAR;
+global BUILDING;
+global PEDESTRIAN;
+BUILDING = 0;    %%the colour for buildings
+NOCAR = 1;
+CAR = 0.4;
+PEDESTRIAN = 0.8;
 
 close all;
 
@@ -63,13 +66,9 @@ for a = 1:c_m
         end
     end
 end
-%check if city map is a mix of crossroads and roundaoubts or if it made up
-%of purely one or the other
-if ( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 )
-    mix = false;
-else
-    mix = true;
-end
+%check if city map is a mix of crossroads and roundaoubts or if it is made up
+%purely of one or the other
+mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
 %promt traffic density
 d = input('\nenter traffic density: ');
@@ -87,17 +86,9 @@ avFlow = zeros(1,max(size(d)));
 avRo = zeros(1,max(size(d)));
 avCr = zeros(1,max(size(d)));
 
-if  ( show == 'y' || show == 'n' )
-    %if wanted run simulation with graphics
-    if ( show == 'y' )
-        for di=1:max(size(d))
-            [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,true);
-        end
-    %if animation undesired run simulation without graphics    
-    else
-        for di=1:max(size(d))
-            [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,false);
-        end
+if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
+    for di=1:max(size(d))
+        [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,show == 'y');
     end
    
     figure(2);

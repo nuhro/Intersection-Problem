@@ -23,7 +23,10 @@ function [tp_next, ...
 %This program requires the following subprogams:
 %PDESTINATION
 %
-%A project by Bastian Buecheler and Tony Wood in the GeSS course "Modelling
+%A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
+%and Simulation of Social Systems with MATLAB" at ETH Zurich.
+%Fall 2012
+%Matlab code is based on code from Bastian Buecheler and Tony Wood in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

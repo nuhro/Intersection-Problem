@@ -7,7 +7,10 @@ function [pfirst] = pdestination
 %       = 0.4 car goes straight ahead
 %       = 0.7 car turns left
 %
-%A project by Bastian Buecheler and Tony Wood in the GeSS course "Modelling
+%A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
+%and Simulation of Social Systems with MATLAB" at ETH Zurich.
+%Fall 2012
+%Matlab code is based on code from Bastian Buecheler and Tony Wood in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

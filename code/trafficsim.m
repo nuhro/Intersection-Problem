@@ -16,7 +16,10 @@ function [averageFlow,avCaRo,avCaCr] = trafficsim(density,config,display)
 %This program requires the following subprogams:
 %ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
 %
-%A project by Bastian Buecheler and Tony Wood in the GeSS course "Modelling
+%A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
+%and Simulation of Social Systems with MATLAB" at ETH Zurich.
+%Fall 2012
+%Matlab code is based on code from Bastian Buecheler and Tony Wood in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
