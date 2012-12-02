@@ -1,4 +1,4 @@
-function [averageFlow,avCaRo,avCaCr] = trafficsim(density,config,display,BUILDING,NOCAR,CAR,PEDESTRIAN)
+function [averageFlow,avCaRo,avCaCr] = trafficsim(density,config,display,BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
 %crossroads.
@@ -40,22 +40,22 @@ nIt=1000;
 %NOCAR means there is no car in this position (white in figure)
 
 %initialize matrices for streets heading toward intersections
-street_inwards = ones(4*config_m,street_length*config_n)*NOCAR;
+street_inwards = ones(4*config_m,street_length*config_n)*EMPTY_STREET;
 inwards_speed = zeros(4*config_m,street_length*config_n);
 %number of elements in t
 inwards_size = sum(sum(street_inwards));
 
 %initialize matrices for street leading away from intersections
-street_outwards = ones(4*config_m,street_length*config_n)*NOCAR;
+street_outwards = ones(4*config_m,street_length*config_n)*EMPTY_STREET;
 outwards_speed = zeros(4*config_m,street_length*config_n);
 
 %initialize matrices for roundabouts
-street_roundabout = ones(config_m,12*config_n)*NOCAR;
+street_roundabout = ones(config_m,12*config_n)*EMPTY_STREET;
 roundabout_speed = zeros(config_m,12*config_n);
-rex = zeros(config_m,12*config_n);
+roundabout_exit = zeros(config_m,12*config_n);
 
 %initialize matrices for crossings with priority to the right
-street_crossroad = ones(6*config_m,6*config_n)*NOCAR;
+street_crossroad = ones(6*config_m,6*config_n)*EMPTY_STREET;
 crossroad_speed = zeros(6 *config_m,6*config_n);
 came = zeros(6*config_m,6*config_n);
 %deadlock prevention
@@ -79,14 +79,14 @@ q = 1;
 while ( q <= numCars )
     w = randi(overall_length,1);
     if ( w <= inwards_size )
-        if ( street_inwards(w) == NOCAR)
+        if ( street_inwards(w) == EMPTY_STREET)
             street_inwards(w) = CAR;
             inwards_speed(w) = randi(5,1);
             q = q + 1;
         end
     end
     if ( w > inwards_size )
-        if ( street_outwards(w-inwards_size) == NOCAR)
+        if ( street_outwards(w-inwards_size) == EMPTY_STREET)
             street_outwards(w-inwards_size) = CAR;
             outwards_speed(w-inwards_size) = randi(5,1);
             q = q +1 ;
@@ -99,13 +99,12 @@ end
 for time = 1:nIt+1
     
     %clear values for next step
-    t_next = ones(4*config_m,street_length*config_n);
-    tspeed_next = zeros(4*config_m,street_length*config_n);
-    f_next = ones(4*config_m,street_length*config_n);
-    fspeed_next = zeros(4*config_m,street_length*config_n);
-    r_next = ones(config_m,12*config_n);
-    rspeed_next = zeros(config_m,12*config_n);
-    rex_next = zeros(config_m,12*config_n);
+    street_inwards_next = ones(4*config_m,street_length*config_n);
+    inwards_speed_next = zeros(4*config_m,street_length*config_n);
+    street_outwards_next = ones(4*config_m,street_length*config_n);
+    outwards_speed_next = zeros(4*config_m,street_length*config_n);
+    street_roundabout_next = ones(config_m,12*config_n);
+    roundabout_speed_next = zeros(config_m,12*config_n);
     p_next = ones(6*config_m,6*config_n);
     pspeed_next = ones(6*config_m,6*config_n);
     came_next = zeros(6*config_m,6*config_n);
@@ -136,14 +135,14 @@ for time = 1:nIt+1
                         %NS-Model
                         if ( street_inwards(c,d) == CAR )
                             %Nagel-Schreckenberg-Model
-                            gap = measure_gap(street_inwards, street_outwards,street_length, a, b, c, d, 1, config_m, config_n, NOCAR);
+                            gap = measure_gap(street_inwards, street_outwards,street_length, a, b, c, d, 1, config_m, config_n, EMPTY_STREET);
                             v = schreckenberg(inwards_speed(c,d), gap, dawdleProb);
                             
                             %NS 4. step: drive, move cars tspeed(c,d) cells
                             %forward
                             %new position
-                            t_next(c,d+v) = CAR;
-                            tspeed_next(c,d+v) = v;
+                            street_inwards_next(c,d+v) = CAR;
+                            inwards_speed_next(c,d+v) = v;
                         end
                     end
                     
@@ -152,7 +151,7 @@ for time = 1:nIt+1
                     
                     if ( street_outwards(c,d) == CAR )
                         %Nagel-Schreckenberg-Model
-                        gap = measure_gap(street_inwards, street_outwards, street_length, a, b, c, d, 0, config_m, config_n, NOCAR);
+                        gap = measure_gap(street_inwards, street_outwards, street_length, a, b, c, d, 0, config_m, config_n, EMPTY_STREET);
                         v = schreckenberg(outwards_speed(c,d), gap, dawdleProb);
                         
                         %NS 4. step: drive, move cars fspeed(c,d) cells
@@ -165,11 +164,11 @@ for time = 1:nIt+1
                             %connect next street
                             [ec,ed] = connection(a,b,c,hhh, ...
                                 config_m,config_n,street_length);
-                            t_next(ec,ed) = CAR;
-                            tspeed_next(ec,ed) = v;
+                            street_inwards_next(ec,ed) = CAR;
+                            inwards_speed_next(ec,ed) = v;
                         else
-                            f_next(c,d+v) = CAR;
-                            fspeed_next(c,d+v) = v;
+                            street_outwards_next(c,d+v) = CAR;
+                            outwards_speed_next(c,d+v) = v;
                         end
                     end
                 end
@@ -186,30 +185,30 @@ for time = 1:nIt+1
                 %do roundabout calculations for this roundabout and time
                 %step
                 %call ROUNDABOUT
-                [t_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    tspeed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    f_next(tI_m+1:tI_m+4,tI_n+1), ...
-                    fspeed_next(tI_m+1:tI_m+4,tI_n+1), ...
-                    r_next(a,rI_n+1:rI_n+12), ...
-                    rspeed_next(a,rI_n+1:rI_n+12), ...
-                    rex_next(a,rI_n+1:rI_n+12)] = ...
+                [street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    street_outwards_next(tI_m+1:tI_m+4,tI_n+1), ...
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1), ...
+                    street_roundabout_next(a,rI_n+1:rI_n+12), ...
+                    roundabout_speed_next(a,rI_n+1:rI_n+12), ...
+                    roundabout_exit(a,rI_n+1:rI_n+12)] = ...
                     roundabout(street_inwards(tI_m+1:tI_m+4,tI_n+street_length), ...
                     street_outwards(tI_m+1:tI_m+4,tI_n+1), ...
                     street_roundabout(a,rI_n+1:rI_n+12), ...
-                    rex(a,rI_n+1:rI_n+12), ...
-                    t_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    tspeed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    f_next(tI_m+1:tI_m+4,tI_n+1), ...
-                    fspeed_next(tI_m+1:tI_m+4,tI_n+1));
+                    roundabout_exit(a,rI_n+1:rI_n+12), ...
+                    street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    street_outwards_next(tI_m+1:tI_m+4,tI_n+1), ...
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN);
                 
                 %write roundabout into map
                 map(mapI_m+street_length+1:mapI_m+street_length+6,mapI_n+street_length+1:mapI_n+street_length+6) = ...
-                    [ 0 1 street_roundabout(a,rI_n+4) street_roundabout(a,rI_n+3) 1 0;
-                    1 street_roundabout(a,rI_n+5) 1 1 street_roundabout(a,rI_n+2) 1;
-                    street_roundabout(a,rI_n+6) 1 0 0 1 street_roundabout(a,rI_n+1);
-                    street_roundabout(a,rI_n+7) 1 0 0 1 street_roundabout(a,rI_n+12);
-                    1 street_roundabout(a,rI_n+8) 1 1 street_roundabout(a,rI_n+11) 1;
-                    0 1 street_roundabout(a,rI_n+9) street_roundabout(a,rI_n+10) 1 0];
+                    [ BUILDING EMPTY_STREET street_roundabout(a,rI_n+4) street_roundabout(a,rI_n+3) EMPTY_STREET BUILDING;
+                    EMPTY_STREET street_roundabout(a,rI_n+5) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+2) EMPTY_STREET;
+                    street_roundabout(a,rI_n+6) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+1);
+                    street_roundabout(a,rI_n+7) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+12);
+                    EMPTY_STREET street_roundabout(a,rI_n+8) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+11) EMPTY_STREET;
+                    BUILDING EMPTY_STREET street_roundabout(a,rI_n+9) street_roundabout(a,rI_n+10) EMPTY_STREET BUILDING];
                 
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroads
@@ -242,10 +241,10 @@ for time = 1:nIt+1
                              
                 %do crossroad calculations for this crossroad and time step
                 %call CROSSROAD
-                [t_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    tspeed_next(tI_m+1:tI_m+4,tI_n+street_length), ... 
-                    f_next(tI_m+1:tI_m+4,tI_n+1), ...
-                    fspeed_next(tI_m+1:tI_m+4,tI_n+1), ...
+                [street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length), ... 
+                    street_outwards_next(tI_m+1:tI_m+4,tI_n+1), ...
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1), ...
                     p_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     pspeed_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     came_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
@@ -256,10 +255,10 @@ for time = 1:nIt+1
                     street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     came(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     deadlock(a,b), ...
-                    t_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    tspeed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
-                    f_next(tI_m+1:tI_m+4,tI_n+1), ...
-                    fspeed_next(tI_m+1:tI_m+4,tI_n+1));
+                    street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length), ...
+                    street_outwards_next(tI_m+1:tI_m+4,tI_n+1), ...
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1));
                 
                 %add cars around this roundabout in this time step to
                 %counter for cars around roundabouts
@@ -317,13 +316,12 @@ for time = 1:nIt+1
     %pause(1);
     
     %move on time step on                    
-    street_inwards = t_next;
-    inwards_speed = tspeed_next;
-    street_outwards = f_next;
-    outwards_speed = fspeed_next;
-    street_roundabout = r_next;
-    roundabout_speed = rspeed_next;
-    rex = rex_next;
+    street_inwards = street_inwards_next;
+    inwards_speed = inwards_speed_next;
+    street_outwards = street_outwards_next;
+    outwards_speed = outwards_speed_next;
+    street_roundabout = street_roundabout_next;
+    roundabout_speed = roundabout_speed_next;
     street_crossroad = p_next;
     crossroad_speed = pspeed_next;
     came = came_next;

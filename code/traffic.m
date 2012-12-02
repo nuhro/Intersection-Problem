@@ -40,13 +40,10 @@ function traffic
 
 %%%%
 % define global variables
-global NOCAR;
-global CAR;
-global BUILDING;
-global PEDESTRIAN;
-BUILDING = 0;    %%the colour for buildings
-NOCAR = 1;
+BUILDING = 0;    %the colour for buildings
+EMPTY_STREET = 1;
 CAR = 0.4;
+CAR_NEXT_EXIT = 0.6;    %the colour of a car which will take the next exit
 PEDESTRIAN = 0.8;
 
 close all;
@@ -88,7 +85,7 @@ avCr = zeros(1,max(size(d)));
 
 if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
     for di=1:max(size(d))
-        [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,show == 'y');
+        [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,show == 'y',BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN);
     end
    
     figure(2);
