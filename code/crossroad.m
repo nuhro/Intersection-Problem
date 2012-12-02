@@ -1,21 +1,21 @@
-function [tp_next, ...
-    tpspeed_next, ...
-    fp_next, ...
-    fpspeed_next, ...
+function [street_inwards_next, ...
+    inwards_speed_next, ...
+    street_outwards_next, ...
+    outwards_speed_next, ...
     plocal_next, ... 
     pspeedlocal_next, ...
     camelocal_next, ...
     deadlocklocal_next, ...
     plocal] ...
-    = crossroad(tp, ...
-    fp, ...
+    = crossroad(street_inwards, ...
+    street_outwards, ...
     plocal, ...
     camelocal, ...
     deadlocklocal, ...
-    tp_next, ...
-    tpspeed_next, ...
-    fp_next, ...
-    fpspeed_next)
+    street_inwards_next, ...
+    inwards_speed_next, ...
+    street_outwards_next, ...
+    outwards_speed_next,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %CROSSROAD Calculation of update for a certain crossroad, density and time
 %step
@@ -65,7 +65,7 @@ unlock = randi(4,1);
 %cars in front of crossroad
 
 %car waiting from above
-if ( tp(1,1) == 0.4 )
+if ( street_inwards(1,1) == 0.4 )
     %if space is free and there is no car coming from the
     %left going straight ahead already in crossing, enter
     if ( plocal(1,3) == 1 && camelocal(2,3) ~= 4 && ...
@@ -78,13 +78,13 @@ if ( tp(1,1) == 0.4 )
         camelocal_next(1,3) = 1;
     %if not wait
     else
-        tp_next(1,1) = tp(1,1);
-        tpspeed_next(1,1) = 0;
+        street_inwards_next(1,1) = street_inwards(1,1);
+        inwards_speed_next(1,1) = 0;
     end
 end
 
 %car waiting from left
-if ( tp(2,1) == 0.4 )
+if ( street_inwards(2,1) == 0.4 )
     %if space is free and there is no car coming from the
     %left going straight ahead already in crossing, enter
     if ( plocal(4,1) == 1 && camelocal(4,2) ~= 1 && ...
@@ -97,13 +97,13 @@ if ( tp(2,1) == 0.4 )
         camelocal_next(4,1) = 2;
     %if not wait
     else
-        tp_next(2,1) = tp(2,1);
-        tpspeed_next(2,1) = 0;
+        street_inwards_next(2,1) = street_inwards(2,1);
+        inwards_speed_next(2,1) = 0;
     end
 end
 
 %car waiting from below
-if ( tp(3,1) == 0.4 )
+if ( street_inwards(3,1) == 0.4 )
     %if space is free and there is no car coming from the
     %left going straight ahead already in crossing, enter
     if ( plocal(6,4) == 1 && camelocal(5,4) ~= 2 && ...
@@ -116,13 +116,13 @@ if ( tp(3,1) == 0.4 )
         camelocal_next(6,4) = 3;
     %if not wait
     else
-        tp_next(3,1) = tp(3,1);
-        tpspeed_next(3,1) = 0;
+        street_inwards_next(3,1) = street_inwards(3,1);
+        inwards_speed_next(3,1) = 0;
     end
 end
 
 %car waiting from right                
-if ( tp(4,1) == 0.4 )
+if ( street_inwards(4,1) == 0.4 )
     %if space is free and there is no car coming from the
     %left going straight ahead already in crossing, enter
     if ( plocal(3,6) == 1 && camelocal(3,5) ~= 3 && ...
@@ -135,8 +135,8 @@ if ( tp(4,1) == 0.4 )
         camelocal_next(3,6) = 4;
     %if not wait
     else
-        tp_next(4,1) = tp(4,1);
-        tpspeed_next(4,1) = 0;
+        street_inwards_next(4,1) = street_inwards(4,1);
+        inwards_speed_next(4,1) = 0;
     end
 end
 
@@ -219,7 +219,7 @@ if ( plocal(1,3) == 0.4 )
     %!warning: only works if this step is done after update
     %of cars in front of crossraod!
     if ( plocal(2,2) == 1 && plocal(2,3) ~= 0.4 && ...
-            ( ( tp_next(2,1) == 1 && plocal_next(4,1) == 1 && ... 
+            ( ( street_inwards_next(2,1) == 1 && plocal_next(4,1) == 1 && ... 
             plocal(4,1) == 1 ) || ( deadlocklocal == 4 && unlock == 1 ) ) )
         plocal_next(2,2) = plocal(1,3);
         pspeedlocal_next(2,2) = 1;
@@ -247,7 +247,7 @@ if ( plocal(4,1) == 0.4 )
     %!warning: only works if this step is done after update
     %of cars in front of crossraod!
     if ( plocal(5,2) == 1 && plocal(4,2) ~= 0.4 && ...
-            ( ( tp_next(3,1) == 1 && plocal_next(6,4) == 1 && ...
+            ( ( street_inwards_next(3,1) == 1 && plocal_next(6,4) == 1 && ...
             plocal(6,4) == 1 ) || ( deadlocklocal == 4 && unlock == 2 ) ) )
         plocal_next(5,2) = plocal(4,1);
         pspeedlocal_next(5,2) = 1;
@@ -275,7 +275,7 @@ if ( plocal(6,4) == 0.4 )
     %!warning: only works if this step is done after update
     %of cars in front of crossraod!
     if ( plocal(5,5) == 1 && plocal(5,4) ~= 0.4 && ...
-            ( ( tp_next(4,1) == 1 && plocal_next(3,6) == 1 && ...
+            ( ( street_inwards_next(4,1) == 1 && plocal_next(3,6) == 1 && ...
             plocal(3,6) == 1 ) || ( deadlocklocal == 4 && unlock == 3 ) ) )
         plocal_next(5,5) = plocal(6,4);
         pspeedlocal_next(5,5) = 1;
@@ -303,7 +303,7 @@ if ( plocal(3,6) == 0.4 )
     %!warning: only works if this step is done after update
     %of cars in front of crossraod!
     if ( plocal(2,5) == 1 && plocal(3,5) ~= 0.4 && ...
-            ( ( tp_next(1,1) == 1 && plocal_next(1,3) == 1 && ...
+            ( ( street_inwards_next(1,1) == 1 && plocal_next(1,3) == 1 && ...
             plocal(1,3) == 1 ) || ( deadlocklocal == 4 && unlock == 4 ) ) )
         plocal_next(2,5) = plocal(3,6);
         pspeedlocal_next(2,5) = 1;
@@ -834,9 +834,9 @@ end
 %car leaving to the top
 if ( plocal(1,4) ~= 1 )
     %if space free, leave crossing with speed 1
-    if ( fp(1,1) == 1 )
-        fp_next(1,1) = 0.4;
-        fpspeed_next(1,1) = 1;
+    if ( street_outwards(1,1) == 1 )
+        street_outwards_next(1,1) = 0.4;
+        outwards_speed_next(1,1) = 1;
     %if space not free, stay
     else
         plocal_next(1,4) = plocal(1,4);
@@ -848,9 +848,9 @@ end
 %car leaving to the left
 if ( plocal(3,1) ~= 1 )
     %if space free, leave crossing with speed 1
-    if ( fp(2,1) == 1 )
-        fp_next(2,1) = 0.4;
-        fpspeed_next(2,1) = 1;
+    if ( street_outwards(2,1) == 1 )
+        street_outwards_next(2,1) = 0.4;
+        outwards_speed_next(2,1) = 1;
     %if space not free, stay
     else
         plocal_next(3,1) = plocal(3,1);
@@ -862,9 +862,9 @@ end
 %car leaving to the bottom
 if ( plocal(6,3) ~= 1 )
     %if space free, leave crossing with speed 1
-    if ( fp(3,1) == 1 )
-        fp_next(3,1) = 0.4;
-        fpspeed_next(3,1) = 1;
+    if ( street_outwards(3,1) == 1 )
+        street_outwards_next(3,1) = 0.4;
+        outwards_speed_next(3,1) = 1;
     %if space not free, stay
     else
         plocal_next(6,3) = plocal(6,3);
@@ -876,14 +876,40 @@ end
 %car leaving to the bottom
 if ( plocal(4,6) ~= 1 )
     %if space free, leave crossing with speed 1
-    if ( fp(4,1) == 1 )
-        fp_next(4,1) = 0.4;
-        fpspeed_next(4,1) = 1;
+    if ( street_outwards(4,1) == 1 )
+        street_outwards_next(4,1) = 0.4;
+        outwards_speed_next(4,1) = 1;
     %if space not free, stay
     else
         plocal_next(4,6) = plocal(4,6);
         pspeedlocal_next(4,6) = 0;
         camelocal_next(4,6) = camelocal(4,6);
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%car outside crossroad
+
+for k = 1:4
+    for j = 1:STREET_INTERSECTION-1
+        if(street_outwards(k,j) == CAR)
+            if ( street_outwards(k,j+1) == EMPTY_STREET && street_outwards_next(k,j+1) == EMPTY_STREET)
+                street_outwards_next(k,j+1) = CAR;
+                outwards_speed_next(k,j+1) = 1;
+            else
+                street_outwards_next(k,j+1) = CAR;
+                outwards_speed_next(k,j+1) = 0;
+            end
+        end
+        if(street_inwards(k,STREET_INTERSECTION+1-j) == CAR)
+            if ( street_inwards(k,STREET_INTERSECTION-j) == EMPTY_STREET && street_inwards_next(k,STREET_INTERSECTION-j) == EMPTY_STREET)
+                street_inwards_next(k,STREET_INTERSECTION-j) = CAR;
+                inwards_speed_next(k,STREET_INTERSECTION-j) = 1;
+            else
+                street_inwards_next(k,STREET_INTERSECTION-j) = CAR;
+                inwards_speed_next(k,STREET_INTERSECTION-j) = 0;
+            end
+        end
     end
 end
                 

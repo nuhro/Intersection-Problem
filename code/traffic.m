@@ -46,6 +46,8 @@ CAR = 0.4;
 CAR_NEXT_EXIT = 0.6;    %the colour of a car which will take the next exit
 PEDESTRIAN = 0.8;
 
+STREET_INTERSECTION = 2;    %STREET_INTERSECTION specifies the number of elements of the road which will be taken care of by the crossroad/roundabout
+
 close all;
 
 %promt city road configutation
@@ -68,9 +70,17 @@ end
 mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
 %promt traffic density
-d = input('\nenter traffic density: ');
+d = input('\nenter car traffic density: ');
 %check d
 if ( max(d) > 1 || min(d) < 0)
+    disp('density must be in range [0,1]');
+    return
+end
+
+%promt pedestrian density
+pd = input('\nenter pedestrian traffic density: ');
+%check d
+if ( max(pd) > 1 || min(pd) < 0)
     disp('density must be in range [0,1]');
     return
 end
@@ -79,13 +89,15 @@ end
 show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 
 %average flow and distributions for every density suppied
-avFlow = zeros(1,max(size(d)));
-avRo = zeros(1,max(size(d)));
-avCr = zeros(1,max(size(d)));
+avFlow = zeros(max(size(pd)),max(size(d)));
+avRo = zeros(max(size(pd)),max(size(d)));
+avCr = zeros(max(size(pd)),max(size(d)));
 
 if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
     for di=1:max(size(d))
-        [avFlow(di),avRo(di),avCr(di)] = trafficsim(d(di),c,show == 'y',BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN);
+        for pdi=1:max(size(pd))
+            [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y',BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
+        end
     end
    
     figure(2);

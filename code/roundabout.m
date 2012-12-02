@@ -4,15 +4,17 @@ function [street_inwards_next, ...
     outwards_speed_next, ...
     street_roundabout_local_next, ...
     roundabout_speedlocal_next, ...
-    roundabout_exit_local_next] ...
+    roundabout_exit_local_next, ...
+    roundabout_pedestrian_bucket] ...
     = roundabout(street_inwards, ...
     street_outwards, ...
     street_roundabout, ...
-    roundabout_exit, ...
+    roundabout_exit ,roundabout_pedestrian_bucket, ...
+    number_of_intersections, pedestrian_density, ...
     street_inwards_next, ...
     inwards_speed_next, ...
     street_outwards_next,... 
-    outwards_speed_next,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN)
+    outwards_speed_next,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ROUNDABOUT Calculation of update for a certain roundabout, density and
 %time step
@@ -81,6 +83,112 @@ for k = 1:4
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%pedestrians
+
+
+if(STREET_INTERSECTION >= 2)
+    bucket4 = 0;
+    for k = 1:4
+        if(k == 4)
+            k1 = 1;
+        else
+            k1 = k+1;
+        end
+        if (( street_inwards(k,2) == EMPTY_STREET || street_inwards(k,2) == PEDESTRIAN) && roundabout_pedestrian_bucket(k) > 0)
+            street_inwards_next(k,2) = PEDESTRIAN;
+            inwards_speed_next(k,2) = 0;
+            if(roundabout_pedestrian_bucket(k) >= 3)
+               roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)-1;
+            else
+               roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)-floor(roundabout_pedestrian_bucket(k)/3);
+            end 
+        elseif ( street_inwards(k,2) == PEDESTRIAN && roundabout_pedestrian_bucket(k) == 0)
+            street_inwards_next(k,2) = EMPTY_STREET;
+            inwards_speed_next(k,2) = 0;
+            if(randi(3,1) == 1)
+                if(k ~= 1)
+                    roundabout_pedestrian_bucket(k-1) = roundabout_pedestrian_bucket(k-1)+1;
+                else
+                    bucket4 = 1;
+                end
+            end
+        end
+        if (( street_outwards(k1,2) == EMPTY_STREET || street_outwards(k1,2) == PEDESTRIAN) && roundabout_pedestrian_bucket(k) > 0)
+            street_outwards_next(k1,2) = PEDESTRIAN;
+            outwards_speed_next(k1,2) = 0;
+            if(roundabout_pedestrian_bucket(k) >= 2)
+               roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)-1;
+            else
+               roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)-floor(roundabout_pedestrian_bucket(k)/2);
+            end 
+        elseif ( street_outwards(k,2) == PEDESTRIAN && roundabout_pedestrian_bucket(k) == 0)
+            street_outwards_next(k1,2) = EMPTY_STREET;
+            outwards_speed_next(k1,2) = 0;
+            if(randi(3,1) == 1)
+                if(k ~= 1)
+                    roundabout_pedestrian_bucket(k-1) = roundabout_pedestrian_bucket(k-1)+1;
+                else
+                    bucket4 = bucket4+1;
+                end
+            end
+        end
+        if (( street_roundabout(k*3-1) == EMPTY_STREET || street_roundabout(k*3-1) == PEDESTRIAN) && roundabout_pedestrian_bucket(k) > 0)
+            street_roundabout_local_next(k*3-1) = PEDESTRIAN;
+            roundabout_speedlocal_next(k*3-1) = 0;
+            roundabout_exit_local_next(k*3-1) = 0;
+            if(roundabout_pedestrian_bucket(k) >= 1)
+               roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)-1;
+            end 
+        elseif ( street_inwards(k,2) == PEDESTRIAN && roundabout_pedestrian_bucket(k) == 0)
+            street_roundabout_local_next(k*3-1) = EMPTY_STREET;
+            roundabout_speedlocal_next(k*3-1) = 0;
+            roundabout_exit_local_next(k*3-1) = 0;
+        end
+    end
+    %add pedestrians which came over the road and where stored in bucket4 to
+    %not change this time step
+    for k = 1:4
+        if(randi(4*number_of_intersections/pedestrian_density,1) == 1)
+            roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)+1;
+        end
+        if(randi(4*number_of_intersections/pedestrian_density,1) == 1)
+            roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)+1;
+        end
+        if(randi(4*number_of_intersections/pedestrian_density,1) == 1)
+            roundabout_pedestrian_bucket(k) = roundabout_pedestrian_bucket(k)+1;
+        end
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%car outside roundabout
+
+for k = 1:4
+    for j = 1:STREET_INTERSECTION-1
+        if(street_outwards(k,j) == CAR)
+            if ( street_outwards(k,j+1) == EMPTY_STREET && street_outwards_next(k,j+1) == EMPTY_STREET)
+                street_outwards_next(k,j+1) = CAR;
+                outwards_speed_next(k,j+1) = 1;
+            else
+                street_outwards_next(k,j+1) = CAR;
+                outwards_speed_next(k,j+1) = 0;
+            end
+        end
+        if(street_inwards(k,STREET_INTERSECTION+1-j) == CAR)
+            if ( street_inwards(k,STREET_INTERSECTION-j) == EMPTY_STREET && street_inwards_next(k,STREET_INTERSECTION-j) == EMPTY_STREET)
+                street_inwards_next(k,STREET_INTERSECTION-j) = CAR;
+                inwards_speed_next(k,STREET_INTERSECTION-j) = 1;
+            else
+                street_inwards_next(k,STREET_INTERSECTION-j) = CAR;
+                inwards_speed_next(k,STREET_INTERSECTION-j) = 0;
+            end
+        end
+    end
+end
+            
+        
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %car in roundabout
 
 for j = 1:12
@@ -89,7 +197,7 @@ for j = 1:12
         %cars in roundabout not at an exit
         if (mod(j,3) ~= 0 )
             %if space free, move one forward
-            if ( street_roundabout(j+1) == EMPTY_STREET )
+            if ( street_roundabout(j+1) == EMPTY_STREET && street_roundabout_local_next(j+1) == EMPTY_STREET)
                 %take new position
                 street_roundabout_local_next(j+1) = street_roundabout(j);
                 roundabout_speedlocal_next(j+1) = 1;
