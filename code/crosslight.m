@@ -44,7 +44,15 @@ function [street_inwards_next, ...
 street_crossroad_next = ones(6,6)*EMPTY_STREET;
 crossroad_speed_next = zeros(6,6);
 
-
+NO_EXIT_YET = 0;
+EXIT_LEFT = 5;
+EXIT_RIGHT = 6;
+EXIT_STRAIGHT_TOP = 1;
+EXIT_STRAIGHT_LEFT = 2;
+EXIT_STRAIGHT_BOTTOM = 3;
+EXIT_STRAIGHT_RIGHT = 4;
+                        
+                        
 
 
 
