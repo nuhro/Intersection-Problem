@@ -46,7 +46,7 @@ CAR = 0.4;
 CAR_NEXT_EXIT = 0.6;    %the colour of a car which will take the next exit
 PEDESTRIAN = 0.8;
 
-STREET_INTERSECTION = 2;    %STREET_INTERSECTION specifies the number of elements of the road which will be taken care of by the crossroad/roundabout
+STREET_INTERSECTION = 7;    %STREET_INTERSECTION specifies the number of elements of the road which will be taken care of by the crossroad/roundabout
 
 close all;
 

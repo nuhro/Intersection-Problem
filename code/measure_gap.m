@@ -1,4 +1,4 @@
-function [ gap ] = measure_gap(street_inwards, street_outwards,street_length, a, b, c, d, inwards, config_m, config_n, EMPTY_STREET,STREET_INTERSECTION)
+function [ gap ] = measure_gap(street_inwards, street_outwards,street_length, a, b, c, d, inwards, inwards_gap, config_m, config_n, EMPTY_STREET,STREET_INTERSECTION)
 %MEASURE_GAP this measures the gap to the next car
 %   how big is gap (to car ahead or intersection)?
 
@@ -8,7 +8,7 @@ iterate = 1;
 while (iterate )    %iterate while iterate is 1
     if(inwards)
         e = e + 1;
-        iterate = e <= 5 && d + e <= b * street_length - STREET_INTERSECTION && ...
+        iterate = e <= 5 && d + e <= b * street_length - STREET_INTERSECTION + inwards_gap && ...
         street_inwards(c,d+e) == EMPTY_STREET;              %STREET_INTERSECTION specifies the number of elements of the road inwards which will be taken care of by the crossroad/roundabout
     else
         %if gap is bigger than distance to edge,connect
