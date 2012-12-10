@@ -92,11 +92,6 @@ end
 
 
 for k = 1:4
-    if(k == 4)
-        k1 = 1;
-    else
-        k1 = k+1;
-    end
     r = rand(1);
     if (( street_inwards(k,STREET_INTERSECTION) == EMPTY_STREET || street_inwards(k,STREET_INTERSECTION) == PEDESTRIAN) && ...
             (r <= pedestrian_density || roundabout_pedestrian_bucket(1,k) > 0))
@@ -113,10 +108,10 @@ for k = 1:4
         inwards_speed_next(k,STREET_INTERSECTION) = 0;
     end
     r = rand(1);
-    if (( street_outwards(k1,2) == EMPTY_STREET || street_outwards(k1,2) == PEDESTRIAN) && ...
+    if (( street_outwards(k,2) == EMPTY_STREET || street_outwards(k,2) == PEDESTRIAN) && ...
             (r <= pedestrian_density || roundabout_pedestrian_bucket(2,k) > 0))
-        street_outwards_next(k1,2) = PEDESTRIAN;
-        outwards_speed_next(k1,2) = 0;
+        street_outwards_next(k,2) = PEDESTRIAN;
+        outwards_speed_next(k,2) = 0;
         if(r <= pedestrian_density)
             temp_roundabout_pedestrian_bucket(1,k) = 1;
         end
@@ -124,8 +119,8 @@ for k = 1:4
             temp_roundabout_pedestrian_bucket(2,k) = 0;
         end
     elseif ( street_outwards(k,2) == PEDESTRIAN)
-        street_outwards_next(k1,2) = EMPTY_STREET;
-        outwards_speed_next(k1,2) = 0;
+        street_outwards_next(k,2) = EMPTY_STREET;
+        outwards_speed_next(k,2) = 0;
     end
     if(0)
         if (( street_roundabout(k*3-1) == EMPTY_STREET || street_roundabout(k*3-1) == PEDESTRIAN) && roundabout_pedestrian_bucket(k) > 0)
