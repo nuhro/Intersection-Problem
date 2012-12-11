@@ -3,7 +3,7 @@ function [ gap ] = measure_gap(street_inwards, street_outwards,street_length, a,
 %   how big is gap (to car ahead or intersection)?
 
 
-e = 1;
+e = 0;
 iterate = 1;
 while (iterate )    %iterate while iterate is 1
     if(inwards)
@@ -11,6 +11,7 @@ while (iterate )    %iterate while iterate is 1
         iterate = e <= 5 && d + e <= b * street_length - STREET_INTERSECTION + inwards_gap && ...
         street_inwards(c,d+e) == EMPTY_STREET;              %STREET_INTERSECTION specifies the number of elements of the road inwards which will be taken care of by the crossroad/roundabout
     else
+        e = e + 1;
         %if gap is bigger than distance to edge,connect
         %steets
         if ( d + e > b * street_length)
@@ -29,8 +30,7 @@ while (iterate )    %iterate while iterate is 1
             end
             iterate = 0;
         else
-            iterate = e <= 4 && street_outwards(c,d+e) == EMPTY_STREET;    %% <= 4 b.c. it'll be 5 after this loop
-            e = e + 1;
+            iterate = e <= 5 && street_outwards(c,d+e) == EMPTY_STREET;    %% <= 4 b.c. it'll be 5 after this loop
         end
     end 
 end
