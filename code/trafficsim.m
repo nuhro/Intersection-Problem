@@ -11,7 +11,7 @@ function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density
 %INPUT:
 %DENSITY, Traffic density 
 %CONFIG, City map
-%DISPlAY, Turn graphics on 'true' or off 'false'
+%DISPLAY, Turn graphics on 'true' or off 'false'
 %
 %This program requires the following subprogams:
 %ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
@@ -24,7 +24,7 @@ function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%dawde probability
+%dawdle probability
 dawdleProb = 0.2;
 %street length (>5)
 street_length = 30;
@@ -79,7 +79,7 @@ map = zeros(config_m*(2*street_length+6),config_n*(2*street_length+6));
 avSpeedIt = zeros(nIt+1,1);
 %counter for cars around crossroads
 numCaCrIt = zeros(nIt+1,1);
-%counter for cars around crossroads
+%counter for cars around roundabouts
 numCaRoIt = zeros(nIt+1,1);
 
 %distribute cars randomly on streets for starting point
@@ -194,7 +194,7 @@ for time = 1:nIt+1
             
             %check if intersection is a roundabout
             if  ( config(a,b) == 0 )
-                %define index strating point for this roundabout
+                %define index starting point for this roundabout
                 rI_n = (b - 1) * 12;
                 
                 %do roundabout calculations for this roundabout and time
@@ -337,7 +337,7 @@ for time = 1:nIt+1
         end
     end
     
-    %calculate average velosity per time step
+    %calculate average velocity per time step
     avSpeedIt(time) = ( sum(sum(inwards_speed)) + sum(sum(outwards_speed)) + ... 
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
         

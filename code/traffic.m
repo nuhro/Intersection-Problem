@@ -65,7 +65,7 @@ for a = 1:c_m
         end
     end
 end
-%check if city map is a mix of crossroads and roundaoubts or if it is made up
+%check if city map is a mix of crossroads and roundabouts or if it is made up
 %purely of one or the other
 mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
@@ -88,7 +88,7 @@ end
 %ask if simulation should be displayed
 show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 
-%average flow and distributions for every density suppied
+%average flow and distributions for every density supplied
 avFlow = zeros(max(size(pd)),max(size(d)));
 avRo = zeros(max(size(pd)),max(size(d)));
 avCr = zeros(max(size(pd)),max(size(d)));
@@ -103,14 +103,14 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
     figure(2);
     %is city map is a mix of roundabout and crossroads, plot distribution
     if ( mix )
-        %plot relativ number of cars at roundabouts and number of cars at
+        %plot relative number of cars at roundabouts and number of cars at
         %crossroads versus traffic density
         subplot(2,1,2);
         plot(d,avRo*100,'rx',d,avCr*100,'gx');
         set(gca,'FontSize',16);
         title('Traffic Distribution');
         xlabel('traffic density');
-        ylabel('relative numeber of cars [%]');
+        ylabel('relative number of cars [%]');
         legend('around roundabouts','around crossroads');
         ylim([0 100]);
         subplot(2,1,1);
