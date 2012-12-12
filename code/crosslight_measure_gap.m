@@ -1,8 +1,13 @@
 function [ gap ] = crosslight_measure_gap(i, j, direction, street_crossroad, ...
     street_outwards, street_outwards_next, inwards, street_inwards, street_inwards_next, traffic_light, ...
-    EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT, STREET_INTERSECTION)
+    EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT, STREET_INTERSECTION, EMPTY_STREET)
 %crosslight_measure_gap this function will measure the gap to the next car
 %in a crosslight
+
+display('gap');
+display(direction);
+display(i);
+display(j);
 
 e = 1;
 iterate = 1;

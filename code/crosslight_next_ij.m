@@ -1,6 +1,13 @@
-function [ ni, nj ] = crosslight_next_ij(i, j, direction,EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT)
+function [ ni, nj ] = crosslight_next_ij(i, j, direction,EXIT_LEFT ,EXIT_RIGHT ,EXIT_STRAIGHT_TOP ,EXIT_STRAIGHT_LEFT ,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT)
 %crosslight_next_ij this function will return the next value for i and j
 %which a car with a given direction and i j coordinates will have
+
+display(direction);
+display(i);
+display(j);
+ni = 0;
+nj = 0;
+
 switch(direction)
     case EXIT_LEFT
         if(i == 1 && j == 4)
@@ -63,7 +70,7 @@ switch(direction)
         elseif(i == 2 && j == 6)
             ni = -2;
             nj = 1;
-        elseif(i < 0)
+        elseif(i < 0)   %here I assume the car is in the last position of the inmwards street
             if(i == -1)
                 ni = 1;
                 nj = 4;
@@ -112,7 +119,7 @@ switch(direction)
         if(i > 0)
             nj = j;
             ni = i+1;
-            if(i > 6)
+            if(ni > 6)
                 ni = -3;
                 nj = 1;
             end
@@ -124,7 +131,7 @@ switch(direction)
         if(i > 0)
             nj = j;
             ni = i-1;
-            if(i < 1)
+            if(ni < 1)
                 ni = -1;
                 nj = 1;
             end
@@ -134,9 +141,9 @@ switch(direction)
         end
     case EXIT_STRAIGHT_LEFT
         if(i > 0)
-            nj = j+1;
+            nj = j-1;
             ni = i;
-            if(j > 6)
+            if(nj < 1)
                 ni = -4;
                 nj = 1;
             end
@@ -148,7 +155,7 @@ switch(direction)
         if(i > 0)
             nj = j+1;
             ni = i;
-            if(j > 6)
+            if(nj > 6)
                 ni = -2;
                 nj = 1;
             end
@@ -156,6 +163,13 @@ switch(direction)
             nj = 1;
             ni = 2;
         end
+    otherwise
+        display(direction);
+        display(i);
+        display(j);
+        ni = 0;
+        nj = 0;
+end
 
 end
 

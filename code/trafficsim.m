@@ -1,4 +1,5 @@
-function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density,config,display,BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION)
+function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density,config,display, ...
+    BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
 %crossroads.
@@ -11,7 +12,7 @@ function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density
 %INPUT:
 %DENSITY, Traffic density 
 %CONFIG, City map
-%DISPLAY, Turn graphics on 'true' or off 'false'
+%DISPlAY, Turn graphics on 'true' or off 'false'
 %
 %This program requires the following subprogams:
 %ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
@@ -24,7 +25,7 @@ function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%dawdle probability
+%dawde probability
 dawdleProb = 0.2;
 %street length (>5)
 street_length = 30;
@@ -65,7 +66,10 @@ street_crossroad = ones(6*config_m,6*config_n)*EMPTY_STREET;
 %    end
 %end
 crossroad_speed = zeros(6 *config_m,6*config_n);
-crossroad_exit = zeros(6 *config_m,6*config_n);
+crossroad_exit = zeros(6*config_m,6*config_n);
+trace_left=ones(4*config_m,(STREET_INTERSECTION+1)*config_n)*EMPTY_STREET;
+trace_left_speed=zeros(4*config_m,(STREET_INTERSECTION+1)*config_n);
+trace_right_direction=zeros(4*config_m,(STREET_INTERSECTION+1)*config_n); 
 
 %this are the computed gaps from the crossections/roundabouts
 inwards_gaps = zeros(config_m,config_n*4);
@@ -76,7 +80,7 @@ pedestrian_bucket = zeros(2*config_m,4*config_n);
 avSpeedIt = zeros(nIt+1,1);
 %counter for cars around crossroads
 numCaCrIt = zeros(nIt+1,1);
-%counter for cars around roundabouts
+%counter for cars around crossroads
 numCaRoIt = zeros(nIt+1,1);
 
 %distribute cars randomly on streets for starting point
@@ -107,6 +111,18 @@ street_roundabout_next = ones(config_m,12*config_n)*EMPTY_STREET;
 roundabout_speed_next = zeros(config_m,12*config_n);
 street_crossroad_next = ones(6*config_m,6*config_n)*EMPTY_STREET;
 crossroad_speed_next = ones(6*config_m,6*config_n);
+crossroad_exit_next = zeros(6*config_m,6*config_n);
+
+%variables for traffic light control
+switchtime = 3;   %time to change signalement (yellow phase)
+ligthlength = 30; %time for staying in same signalement phase
+aheadphase = ceil((ligthlength*pahead)/switchtime);
+turnphase = ceil((ligthlength*(1-pahead)/2)/switchtime);
+totalphase = 6 + 2*aheadphase + 4*turnphase;
+count =0; 
+phase=0;
+traveltime=0;       %time a car needs from one intersection to the next
+
 %iterate over time
 for time = 1:nIt+1
     
@@ -115,6 +131,18 @@ for time = 1:nIt+1
     inwards_speed_next = zeros(4*config_m,street_length*config_n);
     street_outwards_next = ones(4*config_m,street_length*config_n)*EMPTY_STREET;
     outwards_speed_next = zeros(4*config_m,street_length*config_n);
+    trace_left_next=zeros(4*config_m,(STREET_INTERSECTION+1)*config_n);
+    trace_left_speed_next=zeros(4*config_m,(STREET_INTERSECTION+1)*config_n);
+    trace_right_direction_next=zeros(4*config_m,(STREET_INTERSECTION+1)*config_n);
+
+    
+    %calculate taffic light phase
+    if (count == switchtime)
+        phase = mod(phase+1,totalphase);
+        count = 0;
+    else 
+        count = count +1;
+    end
     
     %iterate over all intersection
     for a = 1:config_m
@@ -122,7 +150,7 @@ for time = 1:nIt+1
             
             %define Index starting points for each intersection
             tI_m = (a - 1) * 4;
-            tI_n = (b - 1) * street_length;
+            tI_n = (b - 1) * street_length;                
             
             %positions outside intersections
             %for every intersection iterate along streets
@@ -189,7 +217,7 @@ for time = 1:nIt+1
             
             %check if intersection is a roundabout
             if  ( config(a,b) == 0 )
-                %define index starting point for this roundabout
+                %define index strating point for this roundabout
                 rI_n = (b - 1) * 12;
                 
                 %do roundabout calculations for this roundabout and time
@@ -216,8 +244,7 @@ for time = 1:nIt+1
                     street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     street_outwards_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
-                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
-                
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION,pahead);
                 
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroads
@@ -244,10 +271,14 @@ for time = 1:nIt+1
             
             %check if intersection is a crossing with priority to the right
             if ( config(a,b) == 1 )
-                %define index strating points for this crossroad
+                %define index starting points for this crossraod
                 pI_m = (a - 1) * 6;
                 pI_n = (b - 1) * 6;
-                             
+                
+                %define trace index for this crossraod
+                traceI_m = (a - 1) * 4;
+                traceI_n = (b - 1) * 8;
+                
                 %do crossroad calculations for this crossroad and time step
                 %call CROSSROAD
                 [street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
@@ -256,8 +287,10 @@ for time = 1:nIt+1
                     outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
                     street_crossroad_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     crossroad_speed_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
-                    crossroad_exit(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
-                    inwards_gaps(a,(b - 1) *4+1:(b - 1) *4+4)] ...
+                    crossroad_exit_next(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
+                    pedestrian_bucket((a-1)*2+1:(a-1)*2+2,(b - 1) *4+1:(b - 1) *4+4), ...
+                    inwards_gaps(a,(b - 1) *4+1:(b - 1) *4+4), ...
+                    trace_left_next, trace_left_speed_next, trace_right_direction_next] ...
                     = crosslight(street_inwards(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     inwards_speed(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     street_outwards(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
@@ -265,16 +298,18 @@ for time = 1:nIt+1
                     street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     crossroad_speed(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ...
                     crossroad_exit(pI_m+1:pI_m+6,pI_n+1:pI_n+6), ....
+                    pedestrian_bucket((a-1)*2+1:(a-1)*2+2,(b - 1) *4+1:(b - 1) *4+4), ...
                     inwards_gaps(a,(b - 1) *4+1:(b - 1) *4+4), dawdleProb, ...
                     pedestrian_density, ...
                     street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     inwards_speed_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     street_outwards_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
-                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
+                    outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
+                    pahead, trace_left(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_left_speed(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_right_direction(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
+                    mod(phase+(a+b-2)*traveltime,totalphase), aheadphase, turnphase);
                 
-                
-                %add cars around this roundabout in this time step to
-                %counter for cars around roundabouts
+                %add cars around this crossroad in this time step to
+                %counter for cars around crossroad
                 for v = tI_m+1:tI_m+4
                     for w = tI_n+1:tI_n+street_length
                         if ( street_inwards(v,w) ~= 1 )
@@ -287,28 +322,32 @@ for time = 1:nIt+1
                 end
                 for x = pI_m+1:pI_m+6
                     for y = pI_n+1:pI_n+6
-                        if ( came(x,y) ~= 0 )
+                        if ( street_crossroad(x,y) ~= 0 )
                             numCaCrIt(time) = numCaCrIt(time) + 1;
                         end
                     end
-                end   
-
-            end 
+                end
+                
+            end
             
         end
     end
     
-    %calculate average velocity per time step
+    %calculate average velosity per time step
     avSpeedIt(time) = ( sum(sum(inwards_speed)) + sum(sum(outwards_speed)) + ... 
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
-        
+    
+    traveltime = 2*street_length/avSpeedIt(time); 
+    
     %plot this timestep into the map
     if (display)
         plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET)
     end
     
-    % pause(1);
-    
+    if (slow_motion)
+        pause(1);
+    end
+        
     %move on time step on                    
     street_inwards = street_inwards_next;
     inwards_speed = inwards_speed_next;
@@ -318,6 +357,11 @@ for time = 1:nIt+1
     roundabout_speed = roundabout_speed_next;
     street_crossroad = street_crossroad_next;
     crossroad_speed = crossroad_speed_next;
+    crossroad_exit = crossroad_exit_next; 
+    trace_left = trace_left_next;
+    trace_left_speed = trace_left_speed_next;
+    trace_right_direction = trace_right_direction_next;
+    
 end
            
 %overall average velocity

@@ -65,7 +65,7 @@ for a = 1:c_m
         end
     end
 end
-%check if city map is a mix of crossroads and roundabouts or if it is made up
+%check if city map is a mix of crossroads and roundaoubts or if it is made up
 %purely of one or the other
 mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
@@ -77,9 +77,17 @@ if ( max(d) > 1 || min(d) < 0)
     return
 end
 
+%prompt probability for car driving ahead
+pahead = input('\nenter probability for car driving ahead: ');
+%check pahead
+if (max(pahead) > 1 || min(pahead) < 0)
+    disp('probability must be in range [0,1]');
+    return
+end
+
 %promt pedestrian density
 pd = input('\nenter pedestrian traffic density: ');
-%check d
+%check pd
 if ( max(pd) > 1 || min(pd) < 0)
     disp('density must be in range [0,1]');
     return
@@ -90,8 +98,10 @@ show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 
 %%% runtime measurement - start
 tic;
+%ask if simulation should be in slow_motion
+slow_motion = input('\ndisplay slow_motion? yes (=y) or no (=n) ','s');
 
-%average flow and distributions for every density supplied
+%average flow and distributions for every density suppied
 avFlow = zeros(max(size(pd)),max(size(d)));
 avRo = zeros(max(size(pd)),max(size(d)));
 avCr = zeros(max(size(pd)),max(size(d)));
@@ -99,21 +109,22 @@ avCr = zeros(max(size(pd)),max(size(d)));
 if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
     for di=1:max(size(d))
         for pdi=1:max(size(pd))
-            [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y',BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
+            [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
+                BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion);
         end
     end
    
     figure(2);
     %is city map is a mix of roundabout and crossroads, plot distribution
     if ( mix )
-        %plot relative number of cars at roundabouts and number of cars at
+        %plot relativ number of cars at roundabouts and number of cars at
         %crossroads versus traffic density
         subplot(2,1,2);
         plot(d,avRo*100,'rx',d,avCr*100,'gx');
         set(gca,'FontSize',16);
         title('Traffic Distribution');
         xlabel('traffic density');
-        ylabel('relative number of cars [%]');
+        ylabel('relative numeber of cars [%]');
         legend('around roundabouts','around crossroads');
         ylim([0 100]);
         subplot(2,1,1);

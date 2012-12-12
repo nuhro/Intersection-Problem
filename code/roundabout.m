@@ -5,19 +5,19 @@ function [street_inwards_next, ...
     street_roundabout_local_next, ...
     roundabout_speedlocal_next, ...
     roundabout_exit_local_next, ...
-    roundabout_pedestrian_bucket, inwards_gaps] ...
+    pedestrian_bucket, inwards_gaps] ...
     = roundabout(street_inwards, ...
     inwards_speed, ...
     street_outwards, ...
     outwards_speed, ...
     street_roundabout, ...
-    roundabout_exit ,roundabout_pedestrian_bucket, ...
+    roundabout_exit ,pedestrian_bucket, ...
     inwards_gaps, dawdleProb, ...
     pedestrian_density, ...
     street_inwards_next, ...
     inwards_speed_next, ...
     street_outwards_next,... 
-    outwards_speed_next,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION)
+    outwards_speed_next,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION,pahead)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ROUNDABOUT Calculation of update for a certain roundabout, density and
 %time step
@@ -40,7 +40,7 @@ street_roundabout_local_next = ones(1,12)*EMPTY_STREET;
 roundabout_speedlocal_next = zeros(1,12);
 roundabout_exit_local_next = zeros(1,12);
 
-temp_roundabout_pedestrian_bucket = roundabout_pedestrian_bucket;
+temp_roundabout_pedestrian_bucket = pedestrian_bucket;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %car in front of roundabout
@@ -55,24 +55,24 @@ for k = 1:4
         if ( roundabout_exit(k*3) <= 1 && street_roundabout(iR) == EMPTY_STREET )
             %enter roundabout
             %decide which exit car is going to take
-            u = randi(10,1);
-            %probabilty 3/10 take it takes 1. exit
-            if ( u <= 3 )
+            u = rand(1);
+            %if it takes 1. exit
+            if ( u <= (0.95/2*(1-pahead)))
                 roundabout_exit_local_next(iR) = 1;
                 %indicate
                 street_roundabout_local_next(iR) = CAR_NEXT_EXIT;
                 roundabout_speedlocal_next(iR) = 1;
-            %probabilty 3/10 take it takes 2. exit
-            elseif ( u <= 6 )
+            %if it takes 2. exit
+            elseif ( u <= (0.95/2*(1+pahead)))
                 roundabout_exit_local_next(iR) = 2;
                 street_roundabout_local_next(iR) = CAR;
                 roundabout_speedlocal_next(iR) = 1;
-            %probabilty 3/10 take it takes 3. exit
-            elseif ( u <= 9 )
+            %if it takes 3. exit
+            elseif ( u <= 0.95 )
                 roundabout_exit_local_next(iR) = 3;
                 street_roundabout_local_next(iR) = CAR;
                 roundabout_speedlocal_next(iR) = 1;
-            %probabilty 1/10 take it takes 4. exit (turns around)
+            %if it takes 4. exit (turns around)
             else
                 roundabout_exit_local_next(iR) = 4;
                 street_roundabout_local_next(iR) = CAR;
@@ -94,13 +94,13 @@ end
 for k = 1:4
     r = rand(1);
     if (( street_inwards(k,STREET_INTERSECTION) == EMPTY_STREET || street_inwards(k,STREET_INTERSECTION) == PEDESTRIAN) && ...
-            (r <= pedestrian_density || roundabout_pedestrian_bucket(1,k) > 0))
+            (r <= pedestrian_density || pedestrian_bucket(1,k) > 0))
         street_inwards_next(k,STREET_INTERSECTION) = PEDESTRIAN;
         inwards_speed_next(k,STREET_INTERSECTION) = 0;
         if(r <= pedestrian_density)
             temp_roundabout_pedestrian_bucket(2,k) = 1;
         end
-        if(roundabout_pedestrian_bucket(1,k) > 0)
+        if(pedestrian_bucket(1,k) > 0)
             temp_roundabout_pedestrian_bucket(1,k) = 0;
         end
     elseif ( street_inwards(k,STREET_INTERSECTION) == PEDESTRIAN)
@@ -109,13 +109,13 @@ for k = 1:4
     end
     r = rand(1);
     if (( street_outwards(k,2) == EMPTY_STREET || street_outwards(k,2) == PEDESTRIAN) && ...
-            (r <= pedestrian_density || roundabout_pedestrian_bucket(2,k) > 0))
+            (r <= pedestrian_density || pedestrian_bucket(2,k) > 0))
         street_outwards_next(k,2) = PEDESTRIAN;
         outwards_speed_next(k,2) = 0;
         if(r <= pedestrian_density)
             temp_roundabout_pedestrian_bucket(1,k) = 1;
         end
-        if(roundabout_pedestrian_bucket(2,k) > 0)
+        if(pedestrian_bucket(2,k) > 0)
             temp_roundabout_pedestrian_bucket(2,k) = 0;
         end
     elseif ( street_outwards(k,2) == PEDESTRIAN)
@@ -138,7 +138,7 @@ for k = 1:4
     end
 end
 
-roundabout_pedestrian_bucket = temp_roundabout_pedestrian_bucket;
+pedestrian_bucket = temp_roundabout_pedestrian_bucket;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %car outside roundabout
 
@@ -255,10 +255,3 @@ end
 end
                         
                         
-                            
-                        
-                        
-                        
-                    
-                
-            
