@@ -88,6 +88,9 @@ end
 %ask if simulation should be displayed
 show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 
+%%% runtime measurement - start
+tic;
+
 %average flow and distributions for every density supplied
 avFlow = zeros(max(size(pd)),max(size(d)));
 avRo = zeros(max(size(pd)),max(size(d)));
@@ -126,4 +129,8 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
 else
     disp('Input must be y or n!');
 end
+
+%%% runtime measurement - end
+toc;
+
 end

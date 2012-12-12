@@ -72,9 +72,6 @@ inwards_gaps = zeros(config_m,config_n*4);
 
 pedestrian_bucket = zeros(2*config_m,4*config_n);
 
-%initialaize map
-map = zeros(config_m*(2*street_length+6),config_n*(2*street_length+6));
-
 %initialize flow calculation variables
 avSpeedIt = zeros(nIt+1,1);
 %counter for cars around crossroads
@@ -125,9 +122,7 @@ for time = 1:nIt+1
             
             %define Index starting points for each intersection
             tI_m = (a - 1) * 4;
-            tI_n = (b - 1) * street_length;                
-            mapI_m = (a - 1) * (2 * street_length + 6);
-            mapI_n = (b - 1) * (2 * street_length + 6);
+            tI_n = (b - 1) * street_length;
             
             %positions outside intersections
             %for every intersection iterate along streets
@@ -223,14 +218,6 @@ for time = 1:nIt+1
                     street_outwards_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
                     outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
                 
-                %write roundabout into map
-                map(mapI_m+street_length+1:mapI_m+street_length+6,mapI_n+street_length+1:mapI_n+street_length+6) = ...
-                    [ BUILDING EMPTY_STREET street_roundabout(a,rI_n+4) street_roundabout(a,rI_n+3) EMPTY_STREET BUILDING;
-                    EMPTY_STREET street_roundabout(a,rI_n+5) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+2) EMPTY_STREET;
-                    street_roundabout(a,rI_n+6) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+1);
-                    street_roundabout(a,rI_n+7) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+12);
-                    EMPTY_STREET street_roundabout(a,rI_n+8) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+11) EMPTY_STREET;
-                    BUILDING EMPTY_STREET street_roundabout(a,rI_n+9) street_roundabout(a,rI_n+10) EMPTY_STREET BUILDING];
                 
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroads
@@ -257,7 +244,7 @@ for time = 1:nIt+1
             
             %check if intersection is a crossing with priority to the right
             if ( config(a,b) == 1 )
-                %define index strating points for this crossraod
+                %define index strating points for this crossroad
                 pI_m = (a - 1) * 6;
                 pI_n = (b - 1) * 6;
                              
@@ -285,8 +272,6 @@ for time = 1:nIt+1
                     street_outwards_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
                     outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION);
                 
-                %write crossroad into map
-                map(mapI_m+street_length+1:mapI_m+street_length+6,mapI_n+street_length+1:mapI_n+street_length+6) = street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6);
                 
                 %add cars around this roundabout in this time step to
                 %counter for cars around roundabouts
@@ -309,30 +294,6 @@ for time = 1:nIt+1
                 end   
 
             end 
-
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %write streets into map
-            for i = 1:street_length
-                map(mapI_m+i,mapI_n+street_length+3) = street_inwards(tI_m+1,tI_n+i);
-                map(mapI_m+street_length+4,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
-                map(mapI_m+2*street_length+7-i,mapI_n+street_length+4) = street_inwards(tI_m+3,tI_n+i);
-                map(mapI_m+street_length+3,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
-                map(mapI_m+street_length+1-i,mapI_n+street_length+4) = street_outwards(tI_m+1,tI_n+i);
-                map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
-                map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
-                map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
-            end
-            
-            %illustrate trafic situation (now not of next time step)
-            if ( display)
-                figure(1);
-                imagesc(map);
-                colormap(hot);
-                titlestring = sprintf('Density = %g',car_density);
-                title(titlestring);
-                drawnow;
-            end
-
             
         end
     end
@@ -341,7 +302,12 @@ for time = 1:nIt+1
     avSpeedIt(time) = ( sum(sum(inwards_speed)) + sum(sum(outwards_speed)) + ... 
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
         
-    %pause(1);
+    %plot this timestep into the map
+    if (display)
+        plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET)
+    end
+    
+    % pause(1);
     
     %move on time step on                    
     street_inwards = street_inwards_next;
