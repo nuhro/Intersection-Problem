@@ -100,6 +100,9 @@ show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 tic;
 %ask if simulation should be in slow_motion
 slow_motion = input('\ndisplay slow_motion? yes (=y) or no (=n) ','s');
+if (slow_motion == 'n')
+    slow_motion = 0;
+end
 
 %average flow and distributions for every density suppied
 avFlow = zeros(max(size(pd)),max(size(d)));
