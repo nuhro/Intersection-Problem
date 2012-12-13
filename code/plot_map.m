@@ -79,9 +79,11 @@ end
 
 %illustrate trafic situation (now not of next time step)
 if (display)
-    figure(1);
+    fig1 = figure(1);
     imagesc(map);
-    colormap(hot);
+    load('colormap2', 'mycmap')
+    set(fig1, 'Colormap', mycmap)
+%    colormap(hot);
     titlestring = sprintf('Density = %g',car_density);
     title(titlestring);
     drawnow;
