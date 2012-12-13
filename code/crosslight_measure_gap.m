@@ -4,11 +4,6 @@ function [ gap ] = crosslight_measure_gap(i, j, direction, street_crossroad, ...
 %crosslight_measure_gap this function will measure the gap to the next car
 %in a crosslight
 
-display('gap');
-display(direction);
-display(i);
-display(j);
-
 e = 1;
 iterate = 1;
 ni = i;
@@ -28,9 +23,13 @@ while (e <= 5 && iterate)
         else
             iterate = 0;
         end
+        if((direction == EXIT_LEFT || direction == EXIT_RIGHT) && e > 2)  %limit speed inside the crossection
+            e = 2;
+            iterate = 0;
+        end   
     else
         if(inwards)
-            if(nj == STREET_INTERSECTION+1 || nj == STREET_INTERSECTION) %last or second to last field in front of intersection have to wait if traffoic light is red
+            if(nj == STREET_INTERSECTION+1 || nj == STREET_INTERSECTION) %last or second to last field in front of intersection have to wait if traffic light is red
                 if(traffic_light && street_inwards(-ni,nj) == EMPTY_STREET && street_inwards_next(-ni,nj) == EMPTY_STREET)  %% traffic_light green and street empty
                     e = e + 1;
                 else
@@ -50,7 +49,7 @@ while (e <= 5 && iterate)
                 iterate = 0;
             end
         end
-    end     
+    end  
 end
 gap = e - 1;
 

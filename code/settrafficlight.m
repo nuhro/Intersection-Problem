@@ -8,9 +8,6 @@ if (pedestrian_density<0.6)
     adjust=1;
     else adjust=0;
     end
-    if (localphase>=2*turnphase+aheadphase+3)
-        localphase = localphase-(2*turnphase+aheadphase+3);
-    end
     if (localphase<1)                               %F-A
             %leave trafficlight
     elseif (localphase<turnphase+1)                 %A
@@ -35,15 +32,31 @@ if (pedestrian_density<0.6)
             trafficlight(8,1)=1;
             trafficlight(9,1)=1;
             trafficlight(10,1)=1-adjust;
-    if (localphase>=2*turnphase+aheadphase+3)
-        trafficlightcopyvar = trafficlight;
-        for i=1:9
-            trafficlight(i+3,1) = trafficlightcopyvar(i,1);
-        end
-        for i=10:12
-            trafficlight(mod(i+3,12),1) = trafficlightcopyvar(i,1);
-        end    
-    end
+    elseif (localphase<2*turnphase+aheadphase+4)      %C-D
+            %leave trafficlight
+    elseif (localphase<3*turnphase+aheadphase+4)      %D
+            trafficlight(5,1)=1;
+            trafficlight(6,1)=1;
+            trafficlight(1,1)=1;
+            trafficlight(7,1)=1-adjust;
+     elseif (localphase<3*turnphase+aheadphase+5)      %D-E
+            trafficlight(6,1)=1;
+            trafficlight(1,1)=1;
+            trafficlight(7,1)=1-adjust;
+     elseif (localphase<3*turnphase+2*aheadphase+5)      %E
+            trafficlight(6,1)=1;
+            trafficlight(12,1)=1;
+            trafficlight(1,1)=1-adjust;
+            trafficlight(7,1)=1-adjust;
+    elseif (localphase<3*turnphase+2*aheadphase+6)      %E-F
+            trafficlight(12,1)=1;
+            trafficlight(1,1)=1-adjust;
+            trafficlight(7,1)=1;
+     elseif (localphase<4*turnphase+2*aheadphase+6)      %F
+            trafficlight(11,1)=1;
+            trafficlight(12,1)=1;
+            trafficlight(1,1)=1-adjust;
+            trafficlight(7,1)=1;   
     end
 else
     if (localphase<1)
@@ -84,4 +97,3 @@ else
 end
 
 end
-
