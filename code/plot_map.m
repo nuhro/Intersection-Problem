@@ -1,4 +1,4 @@
-function [ ] = plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET)
+function [ ] = plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLOT_MAP This function plots the map
 %
