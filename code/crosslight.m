@@ -56,7 +56,7 @@ trace_right_direction_next = ones(4,8)*NO_EXIT_YET;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %set traffic light
 %trafficlight = zeros(12,1) for car and pedestrians: red
-trafficlight = settrafficlight(localphase, aheadphase, turnphase, pedestrian_density);
+trafficlight = settrafficlight(localphase, aheadphase, turnphase, pedestrian_density);1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %pedestrians
 for k = 1:4
@@ -159,8 +159,7 @@ for k = 1:4
                 ni = -k;
                 nj = STREET_INTERSECTION+1;
                 q = 1;
-                iterate = 1;
-                while(q <= l+v-(STREET_INTERSECTION+1) && iterate)
+                while(q <= l+v-(STREET_INTERSECTION+1))
                     if(ni > 0 || nj == STREET_INTERSECTION+1)
                         [ni, nj] = crosslight_next_ij(ni, nj, EXIT_LEFT, ...
                             EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
@@ -195,6 +194,7 @@ for i = 1:6
             v = schreckenberg(crossroad_speed(i,j),gap,dawdleProb);
             ni = i;
             nj = j;
+            q = 1;
             while(q <= v)
                 if(ni > 0)
                     [ni, nj] = crosslight_next_ij(ni, nj, crossroad_exit(i,j), ...
