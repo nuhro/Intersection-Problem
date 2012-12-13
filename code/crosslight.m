@@ -57,6 +57,7 @@ trace_right_direction_next = ones(4,8)*NO_EXIT_YET;
 %set traffic light
 %trafficlight = zeros(12,1) for car and pedestrians: red
 trafficlight = settrafficlight(localphase, aheadphase, turnphase, pedestrian_density);
+disp(localphase);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %pedestrians
 for k = 1:4
@@ -83,11 +84,10 @@ for k = 1:4
         if (street_inwards(k,l) == CAR && trace_right_direction(k,l)==NO_EXIT_YET)
             u=rand(1);
             %if it goes left
-            if(0)
-            %if ( u < ((1-pahead)/2))
+            if ( u < ((1-pahead)/2))
                 trace_right_direction(k,l) = EXIT_LEFT;
                 %if it goes ahead
-            %elseif ( u <= ((1+pahead)/2))
+            elseif ( u <= ((1+pahead)/2))
                 trace_right_direction(k,l) = k;
                 
                 %if it goes right
@@ -125,9 +125,16 @@ for k = 1:4
             else
                 ni = -k;
                 nj = STREET_INTERSECTION+1;
-                for q = 1:l+v-(STREET_INTERSECTION+1)
-                    [ni, nj] = crosslight_next_ij(ni, nj, trace_right_direction(k,l) , ...
-                        EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
+                q = 1;
+                while(q <= l+v-(STREET_INTERSECTION+1))
+                    if(ni > 0 || nj == STREET_INTERSECTION+1)
+                        [ni, nj] = crosslight_next_ij(ni, nj, trace_right_direction(k,l) , ...
+                            EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
+                    else    %we are already in street_outwards
+                        %ni = ni;
+                        nj = nj+1;
+                    end
+                    q = q+1;
                 end
                 if (ni > 0)
                     street_crossroad_next(ni,nj) = CAR;
@@ -152,9 +159,17 @@ for k = 1:4
             else
                 ni = -k;
                 nj = STREET_INTERSECTION+1;
-                for q = 1:l+v-(STREET_INTERSECTION+1)
-                    [ni, nj] = crosslight_next_ij(ni, nj, EXIT_LEFT, ...
-                        EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
+                q = 1;
+                iterate = 1;
+                while(q <= l+v-(STREET_INTERSECTION+1) && iterate)
+                    if(ni > 0 || nj == STREET_INTERSECTION+1)
+                        [ni, nj] = crosslight_next_ij(ni, nj, EXIT_LEFT, ...
+                            EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
+                    else    %we are already in street_outwards
+                        %ni = ni;
+                        nj = nj+1;
+                    end
+                    q = q+1;
                 end
                 if (ni > 0)
                     street_crossroad_next(ni,nj) = CAR;
@@ -181,21 +196,21 @@ for i = 1:6
             v = schreckenberg(crossroad_speed(i,j),gap,dawdleProb);
             ni = i;
             nj = j;
-            for q = 1:v
-                [ni, nj] = crosslight_next_ij(ni, nj, crossroad_exit(i,j), ...
-                    EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
-                disp('7');
-                disp([ni, nj, trace_right_direction(k,l)]);
+            while(q <= v)
+                if(ni > 0)
+                    [ni, nj] = crosslight_next_ij(ni, nj, crossroad_exit(i,j), ...
+                        EXIT_LEFT,EXIT_RIGHT,EXIT_STRAIGHT_TOP,EXIT_STRAIGHT_LEFT,EXIT_STRAIGHT_BOTTOM,EXIT_STRAIGHT_RIGHT);
+                else    %we are already in street_outwards
+                    %ni = ni;
+                    nj = nj+1;
+                end
+                q = q+1;
             end
             if (ni > 0)
-                disp('5');
-                disp([ni, nj,crossroad_exit(i,j)]);
                 street_crossroad_next(ni,nj) = CAR;
                 crossroad_speed_next(ni,nj) = v;
                 crossroad_exit_next(ni,nj) = crossroad_exit(i,j);
             else
-                disp('6');
-                disp([ni, nj,crossroad_exit(i,j)]);
                 street_outwards_next(-ni,nj) = CAR;
                 outwards_speed_next(-ni,nj) = v;
             end
