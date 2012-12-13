@@ -70,24 +70,24 @@ else
     elseif (localphase<turnphase+aheadphase+2)      %B
             trafficlight(3,1)=1;
             trafficlight(9,1)=1;
-    elseif (localphase<turnphase+ahaedphase+3)     
+    elseif (localphase<turnphase+aheadphase+3)     
             %leave trafficlight
     elseif (localphase<2*turnphase+aheadphase+3)      %C
             trafficlight(1,1)=1;
             trafficlight(4,1)=1;
             trafficlight(11,1)=1;
-    elseif (localphase<2*turnphase+ahaedphase+4)     
+    elseif (localphase<2*turnphase+aheadphase+4)     
             %leave trafficlight
     elseif (localphase<3*turnphase+aheadphase+4)      %D
             trafficlight(5,1)=1;
             trafficlight(7,1)=1;
             trafficlight(10,1)=1;
-    elseif (localphase<3*turnphase+ahaedphase+5)     
+    elseif (localphase<3*turnphase+aheadphase+5)     
             %leave trafficlight
     elseif (localphase<3*turnphase+2*aheadphase+5)      %E
             trafficlight(6,1)=1;
             trafficlight(12,1)=1;  
-    elseif (localphase<3*turnphase+2*ahaedphase+6)     
+    elseif (localphase<3*turnphase+2*aheadphase+6)     
             %leave trafficlight
     elseif (localphase<4*turnphase+2*aheadphase+6)      %F
             trafficlight(1,1)=1;

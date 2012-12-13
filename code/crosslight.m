@@ -56,7 +56,7 @@ trace_right_direction_next = ones(4,8)*NO_EXIT_YET;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %set traffic light
 %trafficlight = zeros(12,1) for car and pedestrians: red
-trafficlight = settrafficlight(localphase, aheadphase, turnphase, pedestrian_density);1
+trafficlight = settrafficlight(localphase, aheadphase, turnphase, pedestrian_density);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %pedestrians
 for k = 1:4
