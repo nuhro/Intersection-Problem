@@ -276,6 +276,9 @@ for time = 1:nIt+1
                 %define trace index for this crossraod
                 traceI_m = (a - 1) * 4;
                 traceI_n = (b - 1) * 8;
+                %define light index for this crossroad
+                lightI_m = (a - 1) ;
+                lightI_n = (b - 1) * 12;
                 
                 localphase = phase+(a+b-2)*traveltime;
                 while (localphase > totalphase)
@@ -295,7 +298,7 @@ for time = 1:nIt+1
                     trace_left_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
                     trace_left_speed_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
                     trace_right_direction_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
-                    trafficlight] ...
+                    light(lightI_m+1,lightI_n+1:lightI_n+12)] ...
                     = crosslight(street_inwards(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     inwards_speed(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     street_outwards(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
@@ -313,11 +316,7 @@ for time = 1:nIt+1
                     pahead, trace_left(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_left_speed(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_right_direction(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
                     localphase, aheadphase, turnphase);
                 
-                
-                 %define light index for this crossraod
-                lightI_m = (a - 1) ;
-                lightI_n = (b - 1) * 12;
-                light(lightI_m+1:lightI_m+4,lightI_n+1:lightI_n+8) = trafficlight;
+
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroad
                 for v = tI_m+1:tI_m+4
