@@ -138,7 +138,7 @@ for time = 1:nIt+1
     
     %calculate taffic light phase
     if (count == switchtime)
-        if (phase == totalphase)
+        if (phase == totalphase+1)
             phase = 0;
         end
         phase = phase+1;
@@ -282,7 +282,10 @@ for time = 1:nIt+1
                 traceI_m = (a - 1) * 4;
                 traceI_n = (b - 1) * 8;
                 
-                localphase = phase;
+                localphase = phase+(a+b-2)*traveltime;
+                while (localphase > totalphase)
+                    localphase = localphase - totalphase;
+                end
                 %do crossroad calculations for this crossroad and time step
                 %call CROSSROAD
                 [street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
