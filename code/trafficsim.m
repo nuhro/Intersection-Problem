@@ -57,14 +57,7 @@ roundabout_exit = zeros(config_m,12*config_n);
 
 %initialize matrices for crossings
 street_crossroad = ones(6*config_m,6*config_n)*EMPTY_STREET;
-%for a = 1:config_m
-%    for b = 1:config_n
-%        street_crossroad((a - 1)*6+1,(b - 1)*6+3) = BUILDING;
-%        street_crossroad((a - 1)*6+4,(b - 1)*6+1) = BUILDING;
-%        street_crossroad((a - 1)*6+3,(b - 1)*6+6) = BUILDING;
-%        street_crossroad((a - 1)*6+6,(b - 1)*6+4) = BUILDING;
-%    end
-%end
+
 crossroad_speed = zeros(6 *config_m,6*config_n);
 crossroad_exit = zeros(6*config_m,6*config_n);
 trace_left=ones(4*config_m,(STREET_INTERSECTION+1)*config_n)*EMPTY_STREET;
@@ -113,9 +106,11 @@ street_crossroad_next = ones(6*config_m,6*config_n)*EMPTY_STREET;
 crossroad_speed_next = ones(6*config_m,6*config_n);
 crossroad_exit_next = zeros(6*config_m,6*config_n);
 
+light=zeros(config_m, 12*config_n);      %to display light signalisation
+
 %variables for traffic light control
 switchtime = 3;   %time to change signalement (yellow phase)
-ligthlength = 5; %time for staying in same signalement phase
+ligthlength = 30; %time for staying in same signalement phase
 aheadphase = ceil((ligthlength*pahead)/switchtime);
 turnphase = ceil((ligthlength*(1-pahead)/2)/switchtime);
 totalphase = 6 + 2*aheadphase + 4*turnphase;
@@ -299,7 +294,8 @@ for time = 1:nIt+1
                     inwards_gaps(a,(b - 1) *4+1:(b - 1) *4+4), ...
                     trace_left_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
                     trace_left_speed_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
-                    trace_right_direction_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8)] ...
+                    trace_right_direction_next(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
+                    trafficlight] ...
                     = crosslight(street_inwards(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     inwards_speed(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
                     street_outwards(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
@@ -317,6 +313,11 @@ for time = 1:nIt+1
                     pahead, trace_left(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_left_speed(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_right_direction(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
                     localphase, aheadphase, turnphase);
                 
+                
+                 %define light index for this crossraod
+                lightI_m = (a - 1) ;
+                lightI_n = (b - 1) * 12;
+                light(lightI_m+1:lightI_m+4,lightI_n+1:lightI_n+8) = trafficlight;
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroad
                 for v = tI_m+1:tI_m+4
@@ -350,7 +351,7 @@ for time = 1:nIt+1
     
     %plot this timestep into the map
     if (display)
-        plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET)
+        plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light)
     end
     
     if (slow_motion)
