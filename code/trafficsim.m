@@ -115,13 +115,13 @@ crossroad_exit_next = zeros(6*config_m,6*config_n);
 
 %variables for traffic light control
 switchtime = 3;   %time to change signalement (yellow phase)
-ligthlength = 30; %time for staying in same signalement phase
+ligthlength = 5; %time for staying in same signalement phase
 aheadphase = ceil((ligthlength*pahead)/switchtime);
 turnphase = ceil((ligthlength*(1-pahead)/2)/switchtime);
 totalphase = 6 + 2*aheadphase + 4*turnphase;
 count =0; 
 phase=0;
-traveltime=0;       %time a car needs from one intersection to the next
+traveltime=15;       %time a car needs from one intersection to the next
 
 %iterate over time
 for time = 1:nIt+1
@@ -138,7 +138,10 @@ for time = 1:nIt+1
     
     %calculate taffic light phase
     if (count == switchtime)
-        phase = mod(phase+1,totalphase);
+        if (phase == totalphase)
+            phase = 0;
+        end
+        phase = phase+1;
         count = 0;
     else 
         count = count +1;
@@ -279,6 +282,7 @@ for time = 1:nIt+1
                 traceI_m = (a - 1) * 4;
                 traceI_n = (b - 1) * 8;
                 
+                localphase = phase;
                 %do crossroad calculations for this crossroad and time step
                 %call CROSSROAD
                 [street_inwards_next(tI_m+1:tI_m+4,tI_n+street_length-STREET_INTERSECTION:tI_n+street_length), ...
@@ -308,7 +312,7 @@ for time = 1:nIt+1
                     street_outwards_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6), ...
                     outwards_speed_next(tI_m+1:tI_m+4,tI_n+1:tI_n+STREET_INTERSECTION+6),EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
                     pahead, trace_left(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_left_speed(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), trace_right_direction(traceI_m+1:traceI_m+4,traceI_n+1:traceI_n+8), ...
-                    mod(phase+(a+b-2)*traveltime,totalphase), aheadphase, turnphase);
+                    localphase, aheadphase, turnphase);
                 
                 %add cars around this crossroad in this time step to
                 %counter for cars around crossroad
@@ -339,7 +343,7 @@ for time = 1:nIt+1
     avSpeedIt(time) = ( sum(sum(inwards_speed)) + sum(sum(outwards_speed)) + ... 
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
     
-    traveltime = 2*street_length/avSpeedIt(time); 
+    traveltime = ceil(2*street_length/avSpeedIt(time)); 
     
     %plot this timestep into the map
     if (display)

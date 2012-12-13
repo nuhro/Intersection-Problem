@@ -103,9 +103,6 @@ for k = 1:4
         if(pedestrian_bucket(1,k) > 0)
             temp_roundabout_pedestrian_bucket(1,k) = 0;
         end
-    elseif ( street_inwards(k,STREET_INTERSECTION) == PEDESTRIAN)
-        street_inwards_next(k,STREET_INTERSECTION) = EMPTY_STREET;
-        inwards_speed_next(k,STREET_INTERSECTION) = 0;
     end
     r = rand(1);
     if (( street_outwards(k,2) == EMPTY_STREET || street_outwards(k,2) == PEDESTRIAN) && ...
@@ -118,9 +115,6 @@ for k = 1:4
         if(pedestrian_bucket(2,k) > 0)
             temp_roundabout_pedestrian_bucket(2,k) = 0;
         end
-    elseif ( street_outwards(k,2) == PEDESTRIAN)
-        street_outwards_next(k,2) = EMPTY_STREET;
-        outwards_speed_next(k,2) = 0;
     end
     if(0)
         if (( street_roundabout(k*3-1) == EMPTY_STREET || street_roundabout(k*3-1) == PEDESTRIAN) && roundabout_pedestrian_bucket(k) > 0)
@@ -147,13 +141,15 @@ pedestrian_bucket = temp_roundabout_pedestrian_bucket;
 for k = 1:4
     for j = 1:STREET_INTERSECTION
         e = 1;
-        while (e <= 5 && street_outwards(k,j+e) == EMPTY_STREET && street_outwards_next(k,j+e) == EMPTY_STREET)
+        while (e <= 5 && ((street_outwards(k,j+e) == EMPTY_STREET && street_outwards_next(k,j+e) == EMPTY_STREET)  || ...
+                    (street_outwards(k,j+e) == PEDESTRIAN && street_outwards_next(k,j+e) == EMPTY_STREET) ))
             e = e + 1;
         end
         gap = e - 1;
         v = schreckenberg(outwards_speed(k,j), gap, dawdleProb);
         if(street_outwards(k,j) == CAR)
-            if ( street_outwards(k,j+v) == EMPTY_STREET && street_outwards_next(k,j+v) == EMPTY_STREET)
+            if ( (street_outwards(k,j+v) == EMPTY_STREET && street_outwards_next(k,j+v) == EMPTY_STREET) || ...
+                    (street_outwards(k,j+v) == PEDESTRIAN && street_outwards_next(k,j+v) == EMPTY_STREET) )
                 street_outwards_next(k,j+v) = CAR;
                 outwards_speed_next(k,j+v) = v;
             else
@@ -162,7 +158,8 @@ for k = 1:4
             end
         end
         e = 1;
-        while (e <= 5 && j + e <= STREET_INTERSECTION+1 && street_inwards(k,j+e) == EMPTY_STREET && street_inwards_next(k,j+e) == EMPTY_STREET)
+        while (e <= 5 && j + e <= STREET_INTERSECTION+1 && ((street_inwards(k,j+e) == EMPTY_STREET && street_inwards_next(k,j+e) == EMPTY_STREET) || ...
+                    ( street_inwards(k,j+e) == PEDESTRIAN && street_inwards_next(k,j+e) == EMPTY_STREET) ))
             e = e + 1;
         end
         gap = e - 1;
@@ -171,7 +168,8 @@ for k = 1:4
             inwards_gaps(1,k) = gap;
         end
         if(street_inwards(k,j) == CAR)
-            if ( street_inwards(k,j+v) == EMPTY_STREET && street_inwards_next(k,j+v) == EMPTY_STREET)
+            if ( ( street_inwards(k,j+v) == EMPTY_STREET && street_inwards_next(k,j+v) == EMPTY_STREET) || ...
+                    ( street_inwards(k,j+v) == PEDESTRIAN && street_inwards_next(k,j+v) == EMPTY_STREET) )
                 street_inwards_next(k,j+v) = CAR;
                 inwards_speed_next(k,j+v) = v;
             else
