@@ -1,4 +1,6 @@
-function [ ] = plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light)
+function [map] = plot_map(street_length, config, car_density, display, ...
+    street_inwards, street_outwards, street_roundabout, street_crossroad, ...
+    BUILDING,EMPTY_STREET, light)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLOT_MAP This function plots the map
 %
@@ -38,7 +40,8 @@ for a = 1:config_m
             %define index starting point for this roundabout
             rI_n = (b - 1) * 12;
             %write roundabout into map
-            map(mapI_m+street_length+1:mapI_m+street_length+6,mapI_n+street_length+1:mapI_n+street_length+6) = ...
+            map(mapI_m+street_length+1:mapI_m+street_length+6,...
+                mapI_n+street_length+1:mapI_n+street_length+6) = ...
                 [ BUILDING EMPTY_STREET street_roundabout(a,rI_n+4) street_roundabout(a,rI_n+3) EMPTY_STREET BUILDING;
                 EMPTY_STREET street_roundabout(a,rI_n+5) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+2) EMPTY_STREET;
                 street_roundabout(a,rI_n+6) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+1);
@@ -56,7 +59,31 @@ for a = 1:config_m
             pI_m = (a - 1) * 6;
             pI_n = (b - 1) * 6;
             %write crossroad into map
-            map(mapI_m+street_length+1:mapI_m+street_length+6,mapI_n+street_length+1:mapI_n+street_length+6) = street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6);
+            map(mapI_m+street_length+1:mapI_m+street_length+6,...
+                mapI_n+street_length+1:mapI_n+street_length+6) = ...
+                street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6);
+            
+            %traffic lights
+            map(mapI_m+street_length-1, mapI_n+street_length+1) = 0.25; % top, inwards
+            map(mapI_m+street_length-1, mapI_n+street_length+2) = 0.35; % top, inwards
+            map(mapI_m+street_length-1, mapI_n+street_length+5) = 0.45; % top, outwards
+            map(mapI_m+street_length-1, mapI_n+street_length+6) = 0.55; % top, outwards
+            
+            map(mapI_m+street_length+1, mapI_n+street_length-1) = 0.45; % left, outwards
+            map(mapI_m+street_length+2, mapI_n+street_length-1) = 0.55; % left, outwards
+            map(mapI_m+street_length+5, mapI_n+street_length-1) = 0.25; % left, inwards
+            map(mapI_m+street_length+6, mapI_n+street_length-1) = 0.35; % left, inwards
+            
+            map(mapI_m+street_length+6+2, mapI_n+street_length+1) = 0.45; % bottom, outwards
+            map(mapI_m+street_length+6+2, mapI_n+street_length+2) = 0.55; % bottom, outwards
+            map(mapI_m+street_length+6+2, mapI_n+street_length+5) = 0.25; % bottom, inwards
+            map(mapI_m+street_length+6+2, mapI_n+street_length+6) = 0.35; % bottom, inwards
+            
+            map(mapI_m+street_length+1, mapI_n+street_length+6+2) = 0.45; % right, inwards
+            map(mapI_m+street_length+2, mapI_n+street_length+6+2) = 0.55; % right, inwards
+            map(mapI_m+street_length+5, mapI_n+street_length+6+2) = 0.25; % right, outwards
+            map(mapI_m+street_length+6, mapI_n+street_length+6+2) = 0.35; % right, outwards
+            
         end
         
         
@@ -73,21 +100,18 @@ for a = 1:config_m
             map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
             map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
         end
-        
+    
     end
 end
 
-%illustrate trafic situation (now not of next time step)
-if (display)
-    fig1 = figure(1);
-    imagesc(map);
-    load('colormap2', 'mycmap')
-    set(fig1, 'Colormap', mycmap)
-%    colormap(hot);
-    titlestring = sprintf('Density = %g',car_density);
-    title(titlestring);
-    drawnow;
-end
+% %illustrate trafic situation (now, not of next time step)
+% fig1 = figure(1);
+% imagesc(map);
+% load('colormap2', 'mycmap')
+% set(fig1, 'Colormap', mycmap)
+% titlestring = sprintf('Density = %g',car_density);
+% title(titlestring);
+% drawnow;
 
 end
 

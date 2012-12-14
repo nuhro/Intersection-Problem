@@ -1,5 +1,5 @@
 function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density,config,display, ...
-    BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion)
+    BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion, video)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
 %crossroads.
@@ -30,7 +30,7 @@ dawdleProb = 0.2;
 %street length (>5)
 street_length = 30;
 %number of iterations
-nIt=1000;
+nIt=10;
 
 %dimensions of config, how many intersections in x and y direction are
 %there?
@@ -117,6 +117,26 @@ totalphase = 6 + 2*aheadphase + 4*turnphase;
 count =0; 
 phase=0;
 traveltime=15;       %time a car needs from one intersection to the next
+
+%figure and video
+if (display)
+    %figure for map plotting
+    fig1 = figure(1);
+    load('colormaps/colormap2', 'mycmap');
+    set(fig1, 'Colormap', mycmap);
+%     ax1 = gca;
+    titlestring = sprintf('Density = %g',car_density);
+%     title(ax1, titlestring, 'FontWeight','bold');
+%     [X,Y] = meshgrid(1:config_m*(2*street_length+6),1:config_n*(2*street_length+6));
+
+    %create video
+    if (video)
+        filename = sprintf('videos/video_(%g x %g)_%g_%g.avi', config_m, config_n, ...
+            car_density, pedestrian_density);
+        vidObj = VideoWriter(filename);
+        open(vidObj);
+    end
+end
 
 %iterate over time
 for time = 1:nIt+1
@@ -348,9 +368,22 @@ for time = 1:nIt+1
     
     traveltime = ceil(2*street_length/avSpeedIt(time)); 
     
-    %plot this timestep into the map
+    %plot the map in this timestep into the figure
     if (display)
-        plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light)
+        map = plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light);
+        %illustrate trafic situation (now, not of next time step)
+        imagesc(map);
+%         hold on;
+%         view(0,90);
+%         surf(X,Y,map, 'EdgeColor', 'none');
+        title(titlestring, 'FontWeight','bold');
+        drawnow;
+        if (video)
+            % get the current frame
+            currFrame = getframe(fig1);
+            % add the current frame
+            writeVideo(vidObj,currFrame);
+        end
     end
     
     if (slow_motion)
@@ -371,6 +404,10 @@ for time = 1:nIt+1
     trace_left_speed = trace_left_speed_next;
     trace_right_direction = trace_right_direction_next;
     
+end
+
+if (video)
+    close(vidObj);
 end
            
 %overall average velocity

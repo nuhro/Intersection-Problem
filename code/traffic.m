@@ -104,6 +104,11 @@ if (slow_motion == 'n')
     slow_motion = 0;
 end
 
+video = input('\ncreate video? yes (=y) or no (=n) ', 's');
+if (video == 'n')
+    video = 0;
+end
+
 %average flow and distributions for every density suppied
 avFlow = zeros(max(size(pd)),max(size(d)));
 avRo = zeros(max(size(pd)),max(size(d)));
@@ -113,7 +118,8 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
     for di=1:max(size(d))
         for pdi=1:max(size(pd))
             [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
-                BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion);
+                BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
+                pahead, slow_motion, video);
         end
     end
    
