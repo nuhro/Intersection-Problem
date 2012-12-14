@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                
+\geometry{letterpaper}                   
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{natbib}
+\usepackage{amssymb, amsmath}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+%\title{Intersection Problem}
+%\author{Marcel Arikan, Nuhro Ego, Ralf Kohrt}
+%\date{date} 
+
+\begin{document}
+
+
+
+\include{sections/titlepage}
+\include{agreement_for_free_download}
+\include{sections/tableofcontents}
+\include{sections/abstract}
+\input{sections/individual_contributions}
+\input{sections/introduction}
+\input{sections/description}
+\input{sections/results_and_discussion}
+\input{sections/summary_outlook}
+
+\appendix
+\listoffigures
+
+\clearpage
+\input{sections/listings}
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{bib/references}
+
+
+\end{document}  
+
+
+
+ 
