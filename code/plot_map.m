@@ -20,6 +20,7 @@ function [map] = plot_map(street_length, config, car_density, display, ...
 
 %initialize map
 map = zeros(config_m*(2*street_length+6),config_n*(2*street_length+6));
+map(1,1)=2;
 
 %iterate over all intersection
 for a = 1:config_m
