@@ -59,7 +59,9 @@ for a = 1:config_m
             %define index starting points for this crossroad
             pI_m = (a - 1) * 6;
             pI_n = (b - 1) * 6;
-            pIl_n = (b - 1) * 12;
+            pIl_n = (b - 1) * 12;   % index for light
+            pIt_m = (a - 1) * 4;    % m-index for trace left
+            pIt_n = (b - 1) * 8;    % n-index for trace left
             %write crossroad into map
             map(mapI_m+street_length+1:mapI_m+street_length+6,...
                 mapI_n+street_length+1:mapI_n+street_length+6) = ...
@@ -90,10 +92,10 @@ for a = 1:config_m
             %trace left
             trace_left_length = STREET_INTERSECTION+1;
             for i = 1:trace_left_length
-                map(mapI_m+street_length+7+trace_left_length-i,mapI_n+street_length+4) = trace_left(tI_m+3,tI_n+i);	% bottom, trace_left
-                map(mapI_m+street_length+3,mapI_n+street_length+7+trace_left_length-i) = trace_left(tI_m+4,tI_n+i);	% right, trace_left
-                map(mapI_m+street_length-trace_left_length+i,mapI_n+street_length+3) = trace_left(tI_m+1,tI_n+i); % top, trace_left
-                map(mapI_m+street_length+4,mapI_n+street_length-trace_left_length+i) = trace_left(tI_m+2,tI_n+i); % left, trace_left
+                map(mapI_m+street_length+7+trace_left_length-i,mapI_n+street_length+4) = trace_left(pIt_m+3,pIt_n+i);	% bottom, trace_left
+                map(mapI_m+street_length+3,mapI_n+street_length+7+trace_left_length-i) = trace_left(pIt_m+4,pIt_n+i);	% right, trace_left
+                map(mapI_m+street_length-trace_left_length+i,mapI_n+street_length+3) = trace_left(pIt_m+1,pIt_n+i); % top, trace_left
+                map(mapI_m+street_length+4,mapI_n+street_length-trace_left_length+i) = trace_left(pIt_m+2,pIt_n+i); % left, trace_left
             end
         end
         
