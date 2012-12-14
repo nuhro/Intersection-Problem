@@ -4,7 +4,7 @@ function traffic
 %crossroads.
 %
 %This program requires the following subprogams:
-%TRAFFICSIM,ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
+%TRAFFICLOOP,TRAFFICSIM,ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
 %
 %
 %User will be ask to determine city map,traffic density and whether
@@ -55,9 +55,6 @@ for a = 1:c_m
         end
     end
 end
-%check if city map is a mix of crossroads and roundaoubts or if it is made up
-%purely of one or the other
-mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
 %promt traffic density
 d = input('\nenter car traffic density: ');

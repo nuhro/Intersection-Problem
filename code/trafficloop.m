@@ -50,8 +50,19 @@ PEDESTRIAN = 0.8;
 STREET_INTERSECTION = 7;    %STREET_INTERSECTION specifies the number of elements of the road which will be taken care of by the crossroad/roundabout
 
 
+if(store_results)
+    filename = sprintf('../results/%g/config', folder);
+    save(filename,'c', 'pahead');
+    result = ones(3);
+end
+
 %%% runtime measurement - start
 tic;
+
+[c_m,c_n] = size(c);
+%check if city map is a mix of crossroads and roundaoubts or if it is made up
+%purely of one or the other
+mix = not( sum(sum(c)) == c_m * c_n || sum(sum(c)) == 0 );
 
 %average flow and distributions for every density suppied
 avFlow = zeros(max(size(pd)),max(size(d)));
@@ -64,12 +75,13 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
         for pdi=1:max(size(pd))
             if(store_results)
                 [config_m,config_n] = size(c);
-                filename = sprintf('../results/%g/result_(%g x %g)_%g_%g', folder, config_m, config_n, ...
+                filename = sprintf('../results/%g/result_(%g x %g)_%g_%g.mat', folder, config_m, config_n, ...
                     d(di), pd(pdi));
                 disp(filename);
-                result = trafficsim(d(di),pd(pdi),c,show == 'y', ...
+                result(1:3) = trafficsim(d(di),pd(pdi),c,show == 'y', ...
                     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
                     pahead, slow_motion, video);
+                disp(result);
                 save(filename,'result');
             else 
                 [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
