@@ -3,7 +3,14 @@ function plotresults(d, pd, folder)
 %TRAFFIC Simulation of traffic in an city map containing roundabouts and
 %crossroads.
 %
-%This function will plot the precalculated results
+%This function will plot the precalculated results which are stored in
+%results/folder where folder is the variable supllied from above
+%
+%INPUTS:
+%D is the car density you want to plot over (should be a vector, else the
+%plot would only show one point
+%PD is the pedestrian density
+%folder is the folder your data is located, this should be an integer!!
 %
 %A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
