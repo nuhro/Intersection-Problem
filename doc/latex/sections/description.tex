@@ -1,10 +1,8 @@
 \section{Description of the Model and Implementation}
 
-\subsection{Description of the main loop}
+\subsection{Description of the main function}
 
-In our model one can compare roundabouts with crossroads, controlled by traffic lights (which we will call crosslight), with each other. One can use an arbitrary combination of roundabouts and crosslights in a $N \times M$ map. \\
-The simulation can be done with different probabilities for the car to go straight and left and right will have the same probability but they depend on the probability ahead. One can also choose different car and pedestrian densities. 
-The simulation will generate a plot over these densities as x- and y- axis and the average flow and average speed as z-axis. 
+In our model one can compare roundabouts with crossroads, controlled by traffic lights. One can use an arbitrary combination of roundabouts and crosslights in a $N \times M$ map.\\Main input of the simulation are car and pedestrian densities, which can be entered as arrays. The simulation can be done with different probabilities for the car to go straight ahead. Cars turning left or right will have the same probability. The simulation will generate a plot over these densities as x- and y- axis and the average flow and average speed as z-axis in different colors. 
 
 \begin{center} 
 $flow = density \cdot speed$
@@ -12,11 +10,19 @@ $flow = density \cdot speed$
 
 \subsubsection{Implementation}
 
-We have a big matrix which shows all roads and intersections. And many smaller ones, two for every lane, which contains all the lanes for every road, they are stored after each other. 
-The first one contains the positions of the cars and the second one contains their speed. And we also have one for every array which is used by a crosslight or roundabout and needs to be stored for calculating the next step.\\
+We have created a big matrix to display the simulation, containig all roads and intersections. Cars will be painted in blue and pedestrians in yellow. Many matrices more are needed to store status informations that can change. So for most following matrices, there are two versions, representing current and next status. After every iteration status next will assigned to current. 
 
-For almost every one of those arrays we have two arrays, one for the current state which is shown on the screen and one for the next step, which will be calculated cell for cell. 
-After the calculation the next step will be stored in the first array and the calculation starts over again.
+\subsection{crossroad}
+Depending on the pedestrian density, there are three different signalisation modes. For densities smaller than 0.3, cars that turn can always be blocked currently by a pedestrian. If the density is between 0.3 and 0.6, they can only block cars turning left. And if the density is even higher there should be no conflicts between cars and pedestrians. But if the car densities are very high, it can happen that the fixed yellow phase for changing the signalisation is too short to let all the cars leave the crossroad.\\
+
+A further input parameter in the main-function is the probability of a car driving straight ahead. Cars that turn left and right have the same probability. So depending on these probabilities the relative time for light phases are different. To get the absolute time of a phase, one has to multiply it with a constant, indicating how often you change the signalisation.\\
+
+It would be efficient if cars leaving one intersection would just arrive at the next one in a “green”-phase, so that the crossroad could take advantage of the randomisation process when entering a roundabout. A clever solution for this interesting problem is left to a next group, hopefully. We just added a phase offset between two crossroads, defined by the average time a car needs to drive from one intersection to the next and the fixed street lengths.\\
+
+In contrast to the simulation of Wood and Bücheler and to the roundabout, cars entering the crossroad can have speed bigger than one cell per iteration. So cars can drive straight ahead with maximal speed of 5 cells according to the Nagel-Schreckenberg model. Cars turning left or right are limited to maximal 2 cells per iteration.\\
+
+\subsubsection{Implementation}
+A crossroad consists of three 6kreuz6-Matrices, so that for every cell information about is there a car, its speed and direction can be stored. Furthermore two 4kreuz8-Matrix for 4 lanes of length 8 cells at every street heading towards the crossroad for cars turning left are needed to decide if there's a car and store its speed. For cars driving ahead or turning right one 4kreuz8-Matrix indicates the direction. 
 
 \subsection{Roundabout}
 Our implementation of the roundabout consits of a circle with 12 cells and 4 roads, which lead towards it. Every street has pedestrian crossings in front of each roundabout. 
@@ -27,7 +33,8 @@ Inside the crossroad the speed a car can have is limited to 1 cell per iteration
 A car which wants to leave the roundabout at the next exit will indicate, in our plot this is shown by giving these cars a darker colour. 
 The exit a car will take is calculated from the probability ahead like in the crossroad, but with a fixed probability of 5 \% for a car which will take the 4th exit (i.e. the car will turn around). \\
 \subsubsection{Implementation}
-This is implemented with many arrays, three arrays for the circle, one which shows whether there is a car or not and if the car wants to leave at the next exit. 
-The second is used to store the velocity of the car and the third is used to store how many exits the car will pass without leaving.\\
+This is implemented with many arrays, three arrays for the circle, one which shows whether there is a car or not, and if the car wants to leave at the next exit. 
+The second is used to store the velocity of the car and the third is used to store, how many exits the car will pass without leaving.\\
 
-For the pedestrians we use a yellow colour on the street (a car is blue), and two 'buckets' between the lanes of each road so that they will cross both lanes of a road.
+The entries and exits of the roundabout are randomly blocked by pedestrians. For this reason two 'buckets' are created, representing pedestrian islands between inwards and outgoing streets. If a pedestrian crosses an outgoing street, the bucket makes sure, that in the next iteration inwards street will be blocked. 
+
