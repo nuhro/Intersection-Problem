@@ -1,6 +1,6 @@
 function [map] = plot_map(street_length, config, car_density, display, ...
     street_inwards, street_outwards, street_roundabout, street_crossroad, ...
-    BUILDING,EMPTY_STREET, light)
+    BUILDING,EMPTY_STREET, light, trace_left, STREET_INTERSECTION)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %PLOT_MAP This function plots the map
 %
@@ -65,27 +65,35 @@ for a = 1:config_m
                 street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6);
             
             %traffic lights
-            GREEN_LIGHT = 1.6;
-            RED_LIGHT = 1.3;
+            GREEN_LIGHT = 1.3;
+            RED_LIGHT = 1.6;
             light(light==1) = GREEN_LIGHT;
             light(light==0) = RED_LIGHT;
             
             map(mapI_m+street_length-2, mapI_n+street_length+1) = light(a, pIl_n+2*3+3); % top, inwards
-            map(mapI_m+street_length-2, mapI_n+street_length+4) = light(a, pIl_n+2*3+2); % top, traffic_left
+            map(mapI_m+street_length-2, mapI_n+street_length+4) = light(a, pIl_n+2*3+2); % top, trace_left
             map(mapI_m+street_length-2, mapI_n+street_length+6) = light(a, pIl_n+2*3+1); % top, pedestrians
             
             map(mapI_m+street_length+1, mapI_n+street_length-2) = light(a, pIl_n+3*3+1); % left, outwards
-            map(mapI_m+street_length+3, mapI_n+street_length-2) = light(a, pIl_n+3*3+2); % left, traffic_left
+            map(mapI_m+street_length+3, mapI_n+street_length-2) = light(a, pIl_n+3*3+2); % left, trace_left
             map(mapI_m+street_length+6, mapI_n+street_length-2) = light(a, pIl_n+3*3+3); % left, inwards
             
             map(mapI_m+street_length+6+3, mapI_n+street_length+1) = light(a, pIl_n+0*3+1); % bottom, pedestrians
-            map(mapI_m+street_length+6+3, mapI_n+street_length+3) = light(a, pIl_n+0*3+2); % bottom, traffic_left
+            map(mapI_m+street_length+6+3, mapI_n+street_length+3) = light(a, pIl_n+0*3+2); % bottom, trace_left
             map(mapI_m+street_length+6+3, mapI_n+street_length+6) = light(a, pIl_n+0*3+3); % bottom, inwards
             
             map(mapI_m+street_length+1, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+3); % right, inwards
-            map(mapI_m+street_length+4, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+2); % right, traffic_left
+            map(mapI_m+street_length+4, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+2); % right, trace_left
             map(mapI_m+street_length+6, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+1); % right, pedestrians
             
+            %trace left
+            trace_left_length = STREET_INTERSECTION+1;
+            for i = 1:trace_left_length
+                map(mapI_m+street_length+7+trace_left_length-i,mapI_n+street_length+4) = trace_left(tI_m+1,tI_n+i);	% bottom, trace_left
+                map(mapI_m+street_length+3,mapI_n+street_length+7+trace_left_length-i) = trace_left(tI_m+2,tI_n+i);	% right, trace_left
+                map(mapI_m+street_length-trace_left_length+i,mapI_n+street_length+3) = street_inwards(tI_m+3,tI_n+i); % top, trace_left
+                map(mapI_m+street_length+4,mapI_n+street_length-trace_left_length+i) = trace_left(tI_m+4,tI_n+i); % left, trace_left
+            end
         end
         
         
@@ -101,14 +109,14 @@ for a = 1:config_m
 %             map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
 %             map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
 %             map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
-            map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i);
-            map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
-            map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);
-            map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
-            map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);
-            map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
-            map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);
-            map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
+            map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i); % top, inwards
+            map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i); % left, inwards
+            map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);	% bottom, inwards
+            map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);	% right, inwards
+            map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);	% top, outwards
+            map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);	% left, outwards
+            map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);	% bottom, outwards
+            map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);	% right, outwards
         end
     
     end

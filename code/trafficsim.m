@@ -370,7 +370,9 @@ for time = 1:nIt+1
     
     %plot the map in this timestep into the figure
     if (display)
-        map = plot_map(street_length, config, car_density, display, street_inwards, street_outwards, street_roundabout, street_crossroad, BUILDING,EMPTY_STREET, light);
+        map = plot_map(street_length, config, car_density, display, ...
+            street_inwards, street_outwards, street_roundabout, street_crossroad, ...
+            BUILDING,EMPTY_STREET, light, trace_left, STREET_INTERSECTION);
         %illustrate trafic situation (now, not of next time step)
         imagesc(map);
 %         hold on;
