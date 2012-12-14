@@ -55,34 +55,36 @@ for a = 1:config_m
         
         %check if intersection is a crossing with priority to the right
         if ( config(a,b) == 1 )
-            %define index strating points for this crossroad
+            %define index starting points for this crossroad
             pI_m = (a - 1) * 6;
             pI_n = (b - 1) * 6;
+            pIl_n = (b - 1) * 12;
             %write crossroad into map
             map(mapI_m+street_length+1:mapI_m+street_length+6,...
                 mapI_n+street_length+1:mapI_n+street_length+6) = ...
                 street_crossroad(pI_m+1:pI_m+6,pI_n+1:pI_n+6);
             
             %traffic lights
-            map(mapI_m+street_length-1, mapI_n+street_length+1) = 0.25; % top, inwards
-            map(mapI_m+street_length-1, mapI_n+street_length+2) = 0.35; % top, inwards
-            map(mapI_m+street_length-1, mapI_n+street_length+5) = 0.45; % top, outwards
-            map(mapI_m+street_length-1, mapI_n+street_length+6) = 0.55; % top, outwards
+            GREEN_LIGHT = 1.6;
+            RED_LIGHT = 1.3;
+            light(light==1) = GREEN_LIGHT;
+            light(light==0) = RED_LIGHT;
             
-            map(mapI_m+street_length+1, mapI_n+street_length-1) = 0.45; % left, outwards
-            map(mapI_m+street_length+2, mapI_n+street_length-1) = 0.55; % left, outwards
-            map(mapI_m+street_length+5, mapI_n+street_length-1) = 0.25; % left, inwards
-            map(mapI_m+street_length+6, mapI_n+street_length-1) = 0.35; % left, inwards
+            map(mapI_m+street_length-2, mapI_n+street_length+1) = light(a, pIl_n+2*3+2); % top, inwards
+            map(mapI_m+street_length-2, mapI_n+street_length+4) = light(a, pIl_n+2*3+1); % top, traffic_left
+            map(mapI_m+street_length-2, mapI_n+street_length+6) = light(a, pIl_n+2*3+0); % top, pedestrians
             
-            map(mapI_m+street_length+6+2, mapI_n+street_length+1) = 0.45; % bottom, outwards
-            map(mapI_m+street_length+6+2, mapI_n+street_length+2) = 0.55; % bottom, outwards
-            map(mapI_m+street_length+6+2, mapI_n+street_length+5) = 0.25; % bottom, inwards
-            map(mapI_m+street_length+6+2, mapI_n+street_length+6) = 0.35; % bottom, inwards
+            map(mapI_m+street_length+1, mapI_n+street_length-2) = light(a, pIl_n+3*3+0); % left, outwards
+            map(mapI_m+street_length+3, mapI_n+street_length-2) = light(a, pIl_n+3*3+1); % left, traffic_left
+            map(mapI_m+street_length+6, mapI_n+street_length-2) = light(a, pIl_n+3*3+2); % left, inwards
             
-            map(mapI_m+street_length+1, mapI_n+street_length+6+2) = 0.45; % right, inwards
-            map(mapI_m+street_length+2, mapI_n+street_length+6+2) = 0.55; % right, inwards
-            map(mapI_m+street_length+5, mapI_n+street_length+6+2) = 0.25; % right, outwards
-            map(mapI_m+street_length+6, mapI_n+street_length+6+2) = 0.35; % right, outwards
+            map(mapI_m+street_length+6+3, mapI_n+street_length+1) = light(a, pIl_n+0*3+0); % bottom, pedestrians
+            map(mapI_m+street_length+6+3, mapI_n+street_length+3) = light(a, pIl_n+0*3+1); % bottom, traffic_left
+            map(mapI_m+street_length+6+3, mapI_n+street_length+6) = light(a, pIl_n+0*3+2); % bottom, inwards
+            
+            map(mapI_m+street_length+1, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+2); % right, inwards
+            map(mapI_m+street_length+4, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+1); % right, traffic_left
+            map(mapI_m+street_length+6, mapI_n+street_length+6+3) = light(a, pIl_n+1*3+0); % right, pedestrians
             
         end
         
@@ -91,14 +93,22 @@ for a = 1:config_m
         %write streets into map
         
         for i = 1:street_length
-            map(mapI_m+i,mapI_n+street_length+3) = street_inwards(tI_m+1,tI_n+i);
-            map(mapI_m+street_length+4,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
-            map(mapI_m+2*street_length+7-i,mapI_n+street_length+4) = street_inwards(tI_m+3,tI_n+i);
-            map(mapI_m+street_length+3,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
-            map(mapI_m+street_length+1-i,mapI_n+street_length+4) = street_outwards(tI_m+1,tI_n+i);
-            map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
-            map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
-            map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
+%             map(mapI_m+i,mapI_n+street_length+3) = street_inwards(tI_m+1,tI_n+i);
+%             map(mapI_m+street_length+4,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
+%             map(mapI_m+2*street_length+7-i,mapI_n+street_length+4) = street_inwards(tI_m+3,tI_n+i);
+%             map(mapI_m+street_length+3,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
+%             map(mapI_m+street_length+1-i,mapI_n+street_length+4) = street_outwards(tI_m+1,tI_n+i);
+%             map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
+%             map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
+%             map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
+            map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i);
+            map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
+            map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);
+            map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
+            map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);
+            map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
+            map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);
+            map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
         end
     
     end
