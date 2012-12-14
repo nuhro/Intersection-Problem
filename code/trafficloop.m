@@ -53,7 +53,7 @@ STREET_INTERSECTION = 7;    %STREET_INTERSECTION specifies the number of element
 if(store_results)
     filename = sprintf('../results/%g/config', folder);
     save(filename,'c', 'pahead');
-    result = ones(3);
+    result = ones(1,4);
 end
 
 %%% runtime measurement - start
@@ -78,9 +78,13 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
                 filename = sprintf('../results/%g/result_(%g x %g)_%g_%g.mat', folder, config_m, config_n, ...
                     d(di), pd(pdi));
                 disp(filename);
-                result(1:3) = trafficsim(d(di),pd(pdi),c,show == 'y', ...
+                [a1,a2,a3,a4] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
                     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
                     pahead, slow_motion, video);
+                result(1) = a1;
+                result(2) = a2;
+                result(3) = a3;
+                result(4) = a4;
                 disp(result);
                 save(filename,'result');
             else 
