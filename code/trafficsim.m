@@ -116,7 +116,7 @@ turnphase = ceil((ligthlength*(1-pahead)/2)/switchtime);
 totalphase = 6 + 2*aheadphase + 4*turnphase;
 count =0; 
 phase=0;
-traveltime=15;       %time a car needs from one intersection to the next
+traveltime = 15+105*car_density;   %time a car needs from one intersection to the next
 
 %figure and video
 if (display)
@@ -366,10 +366,6 @@ for time = 1:nIt+1
     avSpeedIt(time) = ( sum(sum(inwards_speed)) + sum(sum(outwards_speed)) + ... 
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
     
-    traveltime = ceil(2*street_length/avSpeedIt(time)); 
-    if (traveltime > 60)
-        traveltime = 60;
-    end
     %plot the map in this timestep into the figure
     if (display)
         map = plot_map(street_length, config, car_density, display, ...
