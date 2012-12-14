@@ -1,10 +1,8 @@
 \section{Execution and User Instructions}
-\subsection{User Insructions}
+\subsection{User Instructions}
 The Simulation consists of total 14 functions. Our main-function to be executed is called traffic. 
 The user will be asked, what city configuration he would like to simulate. The input has to be a $N \times M$-Matrix with entries 0=roundabout or 1=crossroad. 
 Then car density, probability for car driving ahead and pedestrian density are numbers between 0 and 1. A density of 0 means no cars, whereas 1 means on every single cell except the ones in the intersections stays a car. 
 Densities can be entered as arrays, so the simulation will run for every single entry. 
 Afterwards the user can decide, whether he wants to display the simulation, if slow motion is required and if he wants to store the data average speed and average flow. \\
-\subsection{Execution}
-The user should start traffic.m and answer the questions he will be asked. traffic.m will then load trafficloop.m which will then call trafficsim.m. In trafficsim. is our main loop for every simulaztion. 
-Here the output graphics, videos etc. will be created. 
+traffic.m will then load trafficloop.m, which will then call trafficsim.m. Our main loop for every iteration is there and In trafficsim. is our main loop for every simulation and here the output graphics, videos etc. will be created. 
