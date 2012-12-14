@@ -38,16 +38,6 @@ function traffic
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%
-% define global variables
-BUILDING = 0;    %the colour for buildings
-EMPTY_STREET = 1;
-CAR = 0.4;
-CAR_NEXT_EXIT = 0.6;    %the colour of a car which will take the next exit
-PEDESTRIAN = 0.8;
-
-STREET_INTERSECTION = 7;    %STREET_INTERSECTION specifies the number of elements of the road which will be taken care of by the crossroad/roundabout
-
 close all;
 
 %promt city road configutation
@@ -96,8 +86,6 @@ end
 %ask if simulation should be displayed
 show = input('\ndisplay simulation graphically? yes (=y) or no (=n) ','s');
 
-%%% runtime measurement - start
-tic;
 %ask if simulation should be in slow_motion
 slow_motion = input('\ndisplay slow_motion? yes (=y) or no (=n) ','s');
 if (slow_motion == 'n')
@@ -109,48 +97,19 @@ if (video == 'n')
     video = 0;
 end
 
-%average flow and distributions for every density suppied
-avFlow = zeros(max(size(pd)),max(size(d)));
-avRo = zeros(max(size(pd)),max(size(d)));
-avCr = zeros(max(size(pd)),max(size(d)));
 
-if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
-    for di=1:max(size(d))
-        for pdi=1:max(size(pd))
-            [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
-                BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
-                pahead, slow_motion, video);
-        end
-    end
-   
-    figure(2);
-    %is city map is a mix of roundabout and crossroads, plot distribution
-    if ( mix )
-        %plot relativ number of cars at roundabouts and number of cars at
-        %crossroads versus traffic density
-        subplot(2,1,2);
-        plot(d,avRo*100,'rx',d,avCr*100,'gx');
-        set(gca,'FontSize',16);
-        title('Traffic Distribution');
-        xlabel('traffic density');
-        ylabel('relative numeber of cars [%]');
-        legend('around roundabouts','around crossroads');
-        ylim([0 100]);
-        subplot(2,1,1);
-    end
-    
-    %plot traffic flow versus traffic density
-    plot(d,avFlow,'x');
-    set(gca,'FontSize',16);
-    title('Traffic Dynamics');
-    xlabel('traffic density');
-    ylabel('average traffic flow');
-    %ylim([0 0.5]);
+store_results = input('\nstore results? yes (=y) or no (=n) ', 's');
+if (store_results == 'n')
+    store_results = 0;
+end
+if(store_results)
+    folder = input('\nin which folder do you want to store your results?');
+    filename = sprintf('../results/%g/config', folder);
+    save(filename,'c', 'pahead');
+    trafficloop(c, d, pahead, pd, show, slow_motion, video, store_results, folder);
 else
-    disp('Input must be y or n!');
+    trafficloop(c, d, pahead, pd, show, slow_motion, video, store_results, 'n');
 end
 
-%%% runtime measurement - end
-toc;
 
 end
