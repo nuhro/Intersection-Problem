@@ -1,6 +1,3 @@
-\DeclareGraphicsExtensions{.pdf,.png}
-\graphicspath{{images/}}
-
 \subsection{Graphical implementation}
 
 One very important part in simulating a specific problem is visualization. First for checking if a given implementation makes sense the way one has written it, for bug fixing and for adjusting the parameters of the model to the real world problem.
@@ -10,7 +7,7 @@ Before programming something out of the head one has to create an idea of how a 
 
 \begin{figure}[htb]
 	\centering
-		\includegraphics[width=0.60\textwidth]{description_mapping_overview}
+		\includegraphics[width=0.8\textwidth]{images/description_mapping_overview.eps}
 	\caption{Overview over the implementation of the plot.}
 	\label{fig:description_mapping_overview}
 \end{figure}
@@ -31,7 +28,10 @@ In the following sections I will explain the programming details of this figure.
 For each type of intersections we have written a function that works out the paths of the cars and returns this information in a $6 \times 6$ matrix. Furthermore information about the pedestrians, the traffic light phases and the cars on the left trace are returned. I implemented these by creating a large matrix
 
 \[
-\mathrm{map} = (\mathrm{(# intersections in x direction)} \cdot (2 \cdot \mathrm{streetlength} + 6) \times \mathrm{(# intersections in y direction)} \cdot (2 \cdot \mathrm{streetlength} + 6))
+ \begin{split}
+\mathrm{map} = (\mathrm{(No. \ of \ intersections \ in \ x \ direction)} \cdot (2 \cdot \mathrm{streetlength} + 6) \times \\ 
+ \mathrm{(No. \ of \ intersections \ in \ y \ direction)} \cdot (2 \cdot \mathrm{streetlength} + 6))
+\end{split}
 \]
 
 in which we wrote all elements listed up above for each time step, that we looked at. The elements of the maps were encoded in a color code from $0$ to $2$, i.e.
@@ -50,18 +50,20 @@ and using a colormap we were able to create a relatively realistic model (see fi
 
 \begin{figure}[htb]
 	\centering
-		\includegraphics[width=0.60\textwidth]{description_mapping_detail}
+		\includegraphics[width=0.8\textwidth]{images/description_mapping_detail.eps}
 	\caption{Details about the implementation of the plot in the case of many intersections.}
 	\label{fig:description_mapping_detail}
 \end{figure}
 
 We wanted to analyze how the traffic flow changes when we have many intersections in a map that are connected together to reproduce a more realistic view of the world. The configuration of each map was written into a matrix. This matrix had $0$ (corresponding to roundabout) and $1$ (corresponds to crossroad) as entries and corresponds to the rough structure of the map. Let's demonstrate this with \autoref{fig:description_mapping_detail}. We see in the top left and bottom right corners two crossroad and in the top right and bottom left corner two roundabouts. Naturally this would be denoted in a matrix as
 \[
-	\bigl(\begin{smallmatrix}
+	\left(\begin{matrix}
 1 & 0\\ 
-0 & 0
-\end{smallmatrix}\bigr)
+0 & 1
+\end{matrix}\right)
 \]
 and this is how we implemented it. Then the outgoing streets of the one cell are connected to the inwards streets of the neighboring cell and programing this, this results in these dynamic maps.
 
 Furthermore we added the support of saving a video output of the this specific configuration. For further details see the code in the listings (see \autoref{plot_map}).
+
+\newpage
