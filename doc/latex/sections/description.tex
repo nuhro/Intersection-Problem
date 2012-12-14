@@ -22,7 +22,7 @@ It would be efficient if cars leaving one intersection would just arrive at the 
 In contrast to the simulation of Wood and Bücheler and to the roundabout, cars entering the crossroad can have speed bigger than one cell per iteration. So cars can drive straight ahead with maximal speed of 5 cells according to the Nagel-Schreckenberg model. Cars turning left or right are limited to maximal 2 cells per iteration.\\
 
 \subsubsection{Implementation}
-A crossroad consists of three 6kreuz6-Matrices, so that for every cell information about is there a car, its speed and direction can be stored. Furthermore two 4kreuz8-Matrix for 4 lanes of length 8 cells at every street heading towards the crossroad for cars turning left are needed to decide if there's a car and store its speed. For cars driving ahead or turning right one 4kreuz8-Matrix indicates the direction. 
+A crossroad consists of three $6 \times 6$-Matrices, so that for every cell information about is there a car, its speed and direction can be stored. Furthermore two $4 \times 8$ -Matrix for 4 lanes of length 8 cells at every street heading towards the crossroad for cars turning left are needed to decide if there's a car and store its speed. For cars driving ahead or turning right one $4 \times 8$-Matrix indicates the direction. 
 
 \subsection{Roundabout}
 Our implementation of the roundabout consits of a circle with 12 cells and 4 roads, which lead towards it. Every street has pedestrian crossings in front of each roundabout. 
