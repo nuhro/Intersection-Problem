@@ -1,4 +1,4 @@
-function [averageFlow,avCaRo,avCaCr] = trafficsim(car_density,pedestrian_density,config,display, ...
+function [averageFlow,avCaRo,avCaCr,averageSpeed] = trafficsim(car_density,pedestrian_density,config,display, ...
     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion, video)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
@@ -367,7 +367,9 @@ for time = 1:nIt+1
         sum(sum(roundabout_speed)) + sum(sum(crossroad_speed)) ) / numCars;
     
     traveltime = ceil(2*street_length/avSpeedIt(time)); 
-    
+    if (traveltime > 60)
+        traveltime = 60;
+    end
     %plot the map in this timestep into the figure
     if (display)
         map = plot_map(street_length, config, car_density, display, ...
