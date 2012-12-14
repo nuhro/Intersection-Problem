@@ -49,6 +49,43 @@ for a = 1:config_m
                 street_roundabout(a,rI_n+7) EMPTY_STREET BUILDING BUILDING EMPTY_STREET street_roundabout(a,rI_n+12);
                 EMPTY_STREET street_roundabout(a,rI_n+8) EMPTY_STREET EMPTY_STREET street_roundabout(a,rI_n+11) EMPTY_STREET;
                 BUILDING EMPTY_STREET street_roundabout(a,rI_n+9) street_roundabout(a,rI_n+10) EMPTY_STREET BUILDING];
+            
+            %write streets into map
+            %normal street
+            for i = 1:street_length-3
+                map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i); % top, inwards
+                map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i); % left, inwards
+                map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);	% bottom, inwards
+                map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);	% right, inwards
+            end
+            for i = 1+3:street_length
+                map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);	% top, outwards
+                map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);	% left, outwards
+                map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);	% bottom, outwards
+                map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);	% right, outwards
+            end
+            %'last mile'
+            for i = street_length-3+1:street_length
+                map(mapI_m+i,mapI_n+street_length+3) = street_inwards(tI_m+1,tI_n+i); % top, inwards
+                map(mapI_m+street_length+4,mapI_n+i) = street_inwards(tI_m+2,tI_n+i); % left, inwards
+                map(mapI_m+2*street_length+7-i,mapI_n+street_length+4) = street_inwards(tI_m+3,tI_n+i);	% bottom, inwards
+                map(mapI_m+street_length+3,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);	% right, inwards
+            end
+            for i = 1:3
+                map(mapI_m+street_length+1-i,mapI_n+street_length+4) = street_outwards(tI_m+1,tI_n+i);	% top, outwards
+                map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);	% left, outwards
+                map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);	% bottom, outwards
+                map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);	% right, outwards
+            end
+            %filling fields for optics
+            map(mapI_m+street_length+1-4,mapI_n+street_length+3) = EMPTY_STREET;    % top, left
+            map(mapI_m+street_length+1-4,mapI_n+street_length+4) = EMPTY_STREET;    % top, right
+            map(mapI_m+street_length+3,mapI_n+street_length+1-4) = EMPTY_STREET;	% left, top
+            map(mapI_m+street_length+4,mapI_n+street_length+1-4) = EMPTY_STREET;	% left, bottom
+            map(mapI_m+street_length+6+4,mapI_n+street_length+3) = EMPTY_STREET;	% bottom, left
+            map(mapI_m+street_length+6+4,mapI_n+street_length+4) = EMPTY_STREET;	% bottom, right
+            map(mapI_m+street_length+3,mapI_n+street_length+6+4) = EMPTY_STREET;	% right, top
+            map(mapI_m+street_length+4,mapI_n+street_length+6+4) = EMPTY_STREET;	% right, bottom
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,29 +134,18 @@ for a = 1:config_m
                 map(mapI_m+street_length-trace_left_length+i,mapI_n+street_length+3) = trace_left(pIt_m+1,pIt_n+i); % top, trace_left
                 map(mapI_m+street_length+4,mapI_n+street_length-trace_left_length+i) = trace_left(pIt_m+2,pIt_n+i); % left, trace_left
             end
-        end
-        
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %write streets into map
-        
-        for i = 1:street_length
-%             map(mapI_m+i,mapI_n+street_length+3) = street_inwards(tI_m+1,tI_n+i);
-%             map(mapI_m+street_length+4,mapI_n+i) = street_inwards(tI_m+2,tI_n+i);
-%             map(mapI_m+2*street_length+7-i,mapI_n+street_length+4) = street_inwards(tI_m+3,tI_n+i);
-%             map(mapI_m+street_length+3,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);
-%             map(mapI_m+street_length+1-i,mapI_n+street_length+4) = street_outwards(tI_m+1,tI_n+i);
-%             map(mapI_m+street_length+3,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);
-%             map(mapI_m+street_length+6+i,mapI_n+street_length+3) = street_outwards(tI_m+3,tI_n+i);
-%             map(mapI_m+street_length+4,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);
-            map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i); % top, inwards
-            map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i); % left, inwards
-            map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);	% bottom, inwards
-            map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);	% right, inwards
-            map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);	% top, outwards
-            map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);	% left, outwards
-            map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);	% bottom, outwards
-            map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);	% right, outwards
+            
+            %write streets into map
+            for i = 1:street_length
+                map(mapI_m+i,mapI_n+street_length+2) = street_inwards(tI_m+1,tI_n+i); % top, inwards
+                map(mapI_m+street_length+5,mapI_n+i) = street_inwards(tI_m+2,tI_n+i); % left, inwards
+                map(mapI_m+2*street_length+7-i,mapI_n+street_length+5) = street_inwards(tI_m+3,tI_n+i);	% bottom, inwards
+                map(mapI_m+street_length+2,mapI_n+2*street_length+7-i) = street_inwards(tI_m+4,tI_n+i);	% right, inwards
+                map(mapI_m+street_length+1-i,mapI_n+street_length+5) = street_outwards(tI_m+1,tI_n+i);	% top, outwards
+                map(mapI_m+street_length+2,mapI_n+street_length+1-i) = street_outwards(tI_m+2,tI_n+i);	% left, outwards
+                map(mapI_m+street_length+6+i,mapI_n+street_length+2) = street_outwards(tI_m+3,tI_n+i);	% bottom, outwards
+                map(mapI_m+street_length+5,mapI_n+street_length+6+i) = street_outwards(tI_m+4,tI_n+i);	% right, outwards
+            end
         end
     
     end
