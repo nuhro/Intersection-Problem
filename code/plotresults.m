@@ -50,8 +50,6 @@ for di=1:max(size(d))
     end
 end
 
-avFlow == avSpeed
-
 fig2 = figure(2);
 %is city map is a mix of roundabout and crossroads, plot distribution
 if ( mix )
@@ -124,6 +122,35 @@ title('Traffic Dynamics');
 xlabel('pedestrian density');
 ylabel('average speed');
 %ylim([0 0.5]);
+
+fig6 = figure(6);
+% hold on;
+% for di=1:length(d)
+%     for pdi=1:length(pd)
+%         plot3(pd(pdi), d(di) ,avSpeed(pdi,di), 'x');
+%     end
+% end
+
+% imagesc(map);
+% hold on;
+% view(0,90);
+surf(pd,d,avSpeed);
+
+% plot3(pd, d ,avSpeed, 'x');
+% set(gca,'FontSize',16);
+title('Traffic Dynamics','FontWeight','bold');
+xlabel('pedestrian density');
+ylabel('traffic density');
+zlabel('average speed');
+
+
+fig7 = figure(7);
+surf(pd,d,avFlow);
+title('Traffic Dynamics','FontWeight','bold');
+xlabel('pedestrian density');
+ylabel('traffic density');
+zlabel('average traffic flow');
+
 
 
 
