@@ -30,7 +30,7 @@ dawdleProb = 0.2;
 %street length (>5)
 street_length = 30;
 %number of iterations
-nIt=10;
+nIt=1001;
 
 %dimensions of config, how many intersections in x and y direction are
 %there?
