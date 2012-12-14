@@ -3,6 +3,11 @@ function [ speed ] = schreckenberg(speed, gap, dawdleProb)
 %SCHRECKENBERG Nagel-Schreckenberg-Model
 %
 %OUTPUT: new speed of the selected car
+%
+%A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
+%and Simulation of Social Systems with MATLAB" at ETH Zurich.
+%Fall 2012
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %NS 1. step: increase velocity if < 5
 if ( speed < 5)

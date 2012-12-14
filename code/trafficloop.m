@@ -7,28 +7,7 @@ function trafficloop(c, d, pahead, pd, show, slow_motion, video, store_results, 
 %TRAFFICSIM,ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
 %
 %
-%User will be ask to determine city map,traffic density and whether
-%simulation is to be displayed or not.
-%
-%The city map is entered by supplying a matrix with elements '1' for
-%crossroads and '0' for roundabouts.
-%
-%The density can be a scalar or a vector. If the density is a scalar
-%TRAFFIC will run the simulation for all densities given. The elements must
-%be in the range of [0,1].
-%
-%If Users chooses to display simulation (by entering 'y') a figure will
-%open showing the animation:
-%-Black cells simbolize empty space
-%-White cells simbolize road
-%-Red cells simbolize cars
-%-Yellow cells simbolize cars indicating to the right
-%-Dark red celss simbolize cars indicating to the left
-%
-%After all simulations have finished TRAFFIC plots the average traffic flow
-%versus the traffic density. If city map is a mix of crossroad and
-%roundabouts the traffic distribution (cars around roundabouts or around
-%crossroads) versus traffic density is also plotted.
+%This is the main loop of our simulation
 %
 %A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.

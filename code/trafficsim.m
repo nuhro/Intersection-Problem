@@ -2,20 +2,26 @@ function [averageFlow,avCaRo,avCaCr,averageSpeed] = trafficsim(car_density,pedes
     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion, video)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
-%crossroads.
+%crosslights.
 %
 %Output:
 %AVERAGEFLOW, Average traffic flow for given city map and density
 %AVCARO, Average amount of cars around roundabouts
 %AVCACR, Average amount of cars around crossroads
+%averageSpeed, Average speed
 %
 %INPUT:
-%DENSITY, Traffic density 
+%CAR_DENSITY, CAR traffic density 
+%PEDESTRIAN_DENSITY, pedestrian traffic density 
 %CONFIG, City map
 %DISPlAY, Turn graphics on 'true' or off 'false'
+%+defined 'global' variables BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION
+%PAHEAD, pobability for a car to go ahead
+%SLOW_MOTION, show graphics in slow motion?
+%VIDEO, generate a video?
 %
 %This program requires the following subprogams:
-%ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
+%ROUNDABOUT,CROSSLIGHT,CONNECTION,PDESTINATION,MEASURE_GAP,SCHRECKENBERG,PLOT_MAP
 %
 %A project by Marcel Arikan, Nuhro Ego and Ralf Kohrt in the GeSS course "Modelling
 %and Simulation of Social Systems with MATLAB" at ETH Zurich.
@@ -36,14 +42,10 @@ nIt=1001;
 %there?
 [config_m,config_n] = size(config);
 
-%in streets cell values indicate the following:
-%CAR means there is a car in this position (red in figure)
-%EMPTY_STREET means there is no car in this position (white in figure)
-
 %initialize matrices for streets heading toward intersections
 street_inwards = ones(4*config_m,street_length*config_n)*EMPTY_STREET;
 inwards_speed = zeros(4*config_m,street_length*config_n);
-%number of elements in t
+%number of elements in street_inwards
 inwards_size = sum(sum(street_inwards));
 
 %initialize matrices for street leading away from intersections
@@ -124,10 +126,7 @@ if (display)
     fig1 = figure(1);
     load('colormaps/colormap4', 'mycmap');
     set(fig1, 'Colormap', mycmap);
-%     ax1 = gca;
     titlestring = sprintf('Density = %g',car_density);
-%     title(ax1, titlestring, 'FontWeight','bold');
-%     [X,Y] = meshgrid(1:config_m*(2*street_length+6),1:config_n*(2*street_length+6));
 
     %create video
     if (video)
@@ -373,9 +372,6 @@ for time = 1:nIt+1
             BUILDING,EMPTY_STREET, light, trace_left, STREET_INTERSECTION);
         %illustrate trafic situation (now, not of next time step)
         imagesc(map);
-%         hold on;
-%         view(0,90);
-%         surf(X,Y,map, 'EdgeColor', 'none');
         title(titlestring, 'FontWeight','bold');
         drawnow;
         if (video)

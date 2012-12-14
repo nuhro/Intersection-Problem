@@ -7,8 +7,10 @@ function traffic
 %TRAFFICLOOP,TRAFFICSIM,ROUNDABOUT,CROSSROAD,CONNECTION,PDESTINATION
 %
 %
-%User will be ask to determine city map,traffic density and whether
-%simulation is to be displayed or not.
+%User will be ask to determine city map,car density, pedestrian density, pahead, whether
+%simulation is to be displayed or not, if the user wants to create a video
+%of the simulation, if the user wants to show the simulaztion in slowmotion
+%and if he wants to store the results to plot them later
 %
 %The city map is entered by supplying a matrix with elements '1' for
 %crossroads and '0' for roundabouts.
@@ -18,12 +20,7 @@ function traffic
 %be in the range of [0,1].
 %
 %If Users chooses to display simulation (by entering 'y') a figure will
-%open showing the animation:
-%-Black cells simbolize empty space
-%-White cells simbolize road
-%-Red cells simbolize cars
-%-Yellow cells simbolize cars indicating to the right
-%-Dark red celss simbolize cars indicating to the left
+%open showing the animation
 %
 %After all simulations have finished TRAFFIC plots the average traffic flow
 %versus the traffic density. If city map is a mix of crossroad and

@@ -30,11 +30,6 @@ function [street_inwards_next, ...
 %Spring 2010
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%in roundabout cell values indicate if car is about to leave roundabout:
-%0.4 means car is not taking next exit (red in figure)
-%0.7 means car is taking next exit (yellow in figure)
-%1 means no car in this position (white in figure)
-
 %clear local next variables
 street_roundabout_local_next = ones(1,12)*EMPTY_STREET;
 roundabout_speedlocal_next = zeros(1,12);
@@ -221,7 +216,7 @@ for j = 1:12
                 
             %car at an exit but not the one its taking
             else
-                %connect r(12) with r(1)
+                %connect street_roundabout(12) with street_roundabout(1)
                 if (j == 12 )
                     j1 = 1;
                 else
