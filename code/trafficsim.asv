@@ -300,7 +300,7 @@ for time = 1:nIt+1
                 lightI_n = (b - 1) * 12;
                 %calculate local off set of phase for different crossroads
                 localphase = phase+(a+b-2)*traveltime;
-                while (localphase > totalphase)         %reset localphase if necessary
+                while (localphase > totalphase)         %reset 
                     localphase = localphase - totalphase;
                 end
                 %do crossroad calculations for this crossroad and time step
