@@ -97,14 +97,14 @@
 
 \subsection{Description of the main loop}
 
-In our modell one can compare roundabouts with crossections,controlled by trafficlights (which we will call crosslight), with each other. One can use an arbitrary combination of roundabouts and crosslights in a $N \times N$ map. \\
+In our model one can compare roundabouts with crossroads, controlled by traffic lights (which we will call \texttt{crosslight}), with each other. One can use an arbitrary combination of roundabouts and crosslights in a $N \times M$ map. \\
 The simulation can be done with different probabilities for the car to go straight and left and right will have the same probability but depend on the probability ahead. One can also choose different car and pedestrian densities. 
 The simulation will generate a plot over these densities as x- and y- axis and the average flow $flow = density \cdot speed$ and average speed as z-axis. 
 
 \subsubsection{Implementation}
 
 We have a big matrix which shows all roads and intersections. And many smaller ones, 2 for every lane, which contain all the lanes for every road after each other. 
-The first one contains the positions of the cars and the second one contains their speed. And one for every array which is used by a crosslight or roundabout intersection and needs to be stored for calculating the next step.\\
+The first one contains the positions of the cars and the second one contains their speed. And one for every array which is used by a \texttt{crosslight} or roundabout intersection and needs to be stored for calculating the next step.\\
 
 For almost every one of those arrays we have to arrays, one for the current state which is shown on the screen and one for the next step which contains the next step, which will be calculated cell for cell. 
 After the calculation the next step will be stored in the first array and the calculation starts over again.
