@@ -9,8 +9,8 @@
 \usepackage{amssymb, amsmath}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-%\title{Title}
-%\author{Name 1, Name 2}
+%\title{Intersection Problem}
+%\author{Marcel Arikan, Nuhro Ego, Ralf Kohrt}
 %\date{date} 
 
 \begin{document}
@@ -39,21 +39,28 @@
 \bigskip
 
 
-\begin{tabular}{@{}p{3.3cm}@{}p{6cm}@{}@{}p{6cm}@{}}
-\begin{minipage}{3cm}
+\begin{tabular}{@{}p{3cm}@{}p{4cm}@{}@{}p{4cm}@{}@{}p{4cm}@{}}
+\begin{minipage}{2cm}
 
 \end{minipage}
 &
-\begin{minipage}{6cm}
-\vspace{2mm} \large Name 1
+\begin{minipage}{4cm}
+\vspace{2mm} \large Marcel Arikan
 
  \vspace{\baselineskip}
 
 \end{minipage}
 &
-\begin{minipage}{6cm}
+\begin{minipage}{4cm}
+\vspace{2mm} \large Nuhro Ego
 
-\large Name 2
+ \vspace{\baselineskip}
+
+\end{minipage}
+&
+\begin{minipage}{4cm}
+
+\large Ralf Kohrt
 
 \end{minipage}
 \end{tabular}
@@ -86,9 +93,36 @@
 
 \section{Introduction and Motivations}
 
-\section{Description of the Model}
+\section{Description of the Model and Implementation}
 
-\section{Implementation}
+\subsection{Description of the main loop}
+
+In our modell one can compare roundabouts with crossections,controlled by trafficlights (which we will call crosslight), with each other. One can use an arbitrary combination of roundabouts and crosslights in a $N \times N$ map. \\
+The simulation can be done with different probabilities for the car to go straight and left and right will have the same probability but depend on the probability ahead. One can also choose different car and pedestrian densities. 
+The simulation will generate a plot over these densities as x- and y- axis and the average flow $flow = density \cdot speed$ and average speed as z-axis. 
+
+\subsubsection{Implementation}
+
+We have a big matrix which shows all roads and intersections. And many smaller ones, 2 for every lane, which contain all the lanes for every road after each other. 
+The first one contains the positions of the cars and the second one contains their speed. And one for every array which is used by a crosslight or roundabout intersection and needs to be stored for calculating the next step.\\
+
+For almost every one of those arrays we have to arrays, one for the current state which is shown on the screen and one for the next step which contains the next step, which will be calculated cell for cell. 
+After the calculation the next step will be stored in the first array and the calculation starts over again.
+
+\subsection{Roundabout}
+Our implementation of the roundabout consits of a circle with 12 cells and 4 roads, which lead towars it. Every street has pedestrian crossings in front of each roundabout. 
+Like in the real world, cars inside the roundabout have priority over cars wanting to enter them and pedestrians have priorithy over cars at the pedestrian crossings, 
+with the addition, that pedestrians will only walk on the road if there is no car staying or driving on the cell they wants to walk on. 
+Inside the crossroad the speed a car can have is limited to 1 cell per iteration. \\
+
+A car which wants to leave the roundabout at the next exit will indicate, in our plot this is shown by giving these cars a darker colour. 
+The exit a car will take is calculated from the probability ahead like in the crossroad, but with a fixed probability of 5 \% for a car which will take the 4th exit (i.e. the car will turn around). \\
+\subsubsection{Implementation}
+This is implemented with many arrays, three arrays for the circle, one which shows whether there is a car or not and if the car wants to leave at the next exit. 
+The second is used to store the velocity of the car and the third is used to store how many exits the car will pass without leaving.\\
+
+For the pedestrians we use a yellow colour on the street (a car is blue), and two 'buckets' between the lanes of each road so that they will cross both lanes of a road.
+
 
 \section{Simulation Results and Discussion}
 
