@@ -60,7 +60,7 @@ if ( mix )
     set(gca,'FontSize',16);
     title('Traffic Distribution');
     xlabel('traffic density');
-    ylabel('relative numeber of cars [%]');
+    ylabel('relative number of cars [%]');
     legend('around roundabouts','around crossroads');
     ylim([0 100]);
     subplot(2,1,1);
@@ -93,7 +93,6 @@ set(gca,'FontSize',16);
 title('Traffic Dynamics');
 xlabel('pedestrian density');
 ylabel('average traffic flow');
-%ylim([0 0.5]);
 
 
 fig4 = figure(4);
@@ -107,7 +106,6 @@ set(gca,'FontSize',16);
 title('Traffic Dynamics');
 xlabel('traffic density');
 ylabel('average speed');
-%ylim([0 0.5]);
 
 
 fig5 = figure(5);
@@ -121,34 +119,20 @@ set(gca,'FontSize',16);
 title('Traffic Dynamics');
 xlabel('pedestrian density');
 ylabel('average speed');
-%ylim([0 0.5]);
 
 fig6 = figure(6);
-% hold on;
-% for di=1:length(d)
-%     for pdi=1:length(pd)
-%         plot3(pd(pdi), d(di) ,avSpeed(pdi,di), 'x');
-%     end
-% end
-
-% imagesc(map);
-% hold on;
-% view(0,90);
-surf(pd,d,avSpeed);
-
-% plot3(pd, d ,avSpeed, 'x');
-% set(gca,'FontSize',16);
+surf(d,pd,avSpeed);
 title('Traffic Dynamics','FontWeight','bold');
-xlabel('pedestrian density');
-ylabel('traffic density');
+xlabel('traffic density');
+ylabel('pedestrian density');
 zlabel('average speed');
 
 
 fig7 = figure(7);
-surf(pd,d,avFlow);
+surf(d,pd,avFlow);
 title('Traffic Dynamics','FontWeight','bold');
-xlabel('pedestrian density');
-ylabel('traffic density');
+xlabel('traffic density');
+ylabel('pedestrian density');
 zlabel('average traffic flow');
 
 
