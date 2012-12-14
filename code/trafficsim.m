@@ -122,7 +122,7 @@ traveltime=15;       %time a car needs from one intersection to the next
 if (display)
     %figure for map plotting
     fig1 = figure(1);
-    load('colormaps/colormap3', 'mycmap');
+    load('colormaps/colormap4', 'mycmap');
     set(fig1, 'Colormap', mycmap);
 %     ax1 = gca;
     titlestring = sprintf('Density = %g',car_density);
