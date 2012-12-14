@@ -26,15 +26,16 @@ function [street_inwards_next, ...
 %CROSSLIGHT Calculation of update for a certain crossroad, including lane for cars turning left
 %and 8 cells of street_inwards and street_outwards
 %
-%%Output:
+%additional Output:
+%inwards_gaps: gap to place car from street_inwards when entering the 8 cells in front of
+%crossroad calculated by crosslight
+%trafficlight: signalisation for every lane to plot traffic lights in
+%display
 %
-%
-%
-%
-%INPUT:
-%DENSITY, Traffic density 
-%CONFIG, City map
-%DISPlAY, Turn graphics on 'true' or off 'false
+%additional INPUT:
+%pahead: probabiltiy for car driving ahead 
+%localphase: signalisation phase for this crossroad
+%aheadphase, turnphaae: 
 %
 %This program requires the following subprogams:
 %settrafficlight
