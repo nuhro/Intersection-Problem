@@ -1,5 +1,5 @@
 function [averageFlow,avCaRo,avCaCr,averageSpeed] = trafficsim(car_density,pedestrian_density,config,display, ...
-    BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion, video)
+    BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, pahead, slow_motion, video, vidObj)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TRAFFICSIM Simulation of traffic in an city map containing roundabouts and
 %crosslights.
@@ -36,7 +36,7 @@ dawdleProb = 0.2;
 %street length (>5)
 street_length = 30;
 %number of iterations
-nIt=1001;
+nIt=201;
 
 %dimensions of config, how many intersections in x and y direction are
 %there?
@@ -126,15 +126,15 @@ if (display)
     fig1 = figure(1);
     load('colormaps/colormap4', 'mycmap');
     set(fig1, 'Colormap', mycmap);
-    titlestring = sprintf('Density = %g',car_density);
+    titlestring = sprintf('Car density = %g, pedestrian density = %g',car_density, pedestrian_density);
 
-    %create video
-    if (video)
-        filename = sprintf('videos/video_(%g x %g)_%g_%g.avi', config_m, config_n, ...
-            car_density, pedestrian_density);
-        vidObj = VideoWriter(filename);
-        open(vidObj);
-    end
+%     %create video
+%     if (video)
+%         filename = sprintf('videos/video_(%g x %g)_%g_%g.avi', config_m, config_n, ...
+%             car_density, pedestrian_density);
+%         vidObj = VideoWriter(filename);
+%         open(vidObj);
+%     end
 end
 
 %iterate over time
@@ -402,9 +402,9 @@ for time = 1:nIt+1
     
 end
 
-if (video)
-    close(vidObj);
-end
+% if (video)
+%     close(vidObj);
+% end
            
 %overall average velocity
 averageSpeed = sum(avSpeedIt) / max(size(avSpeedIt));

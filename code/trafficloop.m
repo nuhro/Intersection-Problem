@@ -49,6 +49,18 @@ avRo = zeros(max(size(pd)),max(size(d)));
 avCr = zeros(max(size(pd)),max(size(d)));
 
 if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic output
+    
+    %create video
+    if (video)
+        car_densities = mat2str(d);
+        pedestrian_densities = mat2str(pd);
+        filename = sprintf('../videos/video_(%g x %g)_%s_%s.avi', c_m, c_n, ...
+            car_densities, pedestrian_densities);
+        vidObj = VideoWriter(filename);
+        open(vidObj);
+    else
+        vidObj = 0;
+    end
 
     for di=1:max(size(d))
         for pdi=1:max(size(pd))
@@ -59,7 +71,7 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
                 disp(filename);
                 [a1,a2,a3,a4] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
                     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
-                    pahead, slow_motion, video);
+                    pahead, slow_motion, video, vidObj);
                 result(1) = a1;
                 result(2) = a2;
                 result(3) = a3;
@@ -69,11 +81,15 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
             else 
                 [avFlow(pdi,di),avRo(pdi,di),avCr(pdi,di)] = trafficsim(d(di),pd(pdi),c,show == 'y', ...
                     BUILDING,EMPTY_STREET,CAR,CAR_NEXT_EXIT,PEDESTRIAN,STREET_INTERSECTION, ...
-                    pahead, slow_motion, video);
+                    pahead, slow_motion, video, vidObj);
             end
         end
     end
-   
+    
+    if (video)
+        close(vidObj);
+    end
+    
     if(store_results == 0)
         figure(2);
         %is city map is a mix of roundabout and crossroads, plot distribution
