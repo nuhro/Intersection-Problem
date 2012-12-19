@@ -124,6 +124,7 @@ traveltime = 15+105*car_density;   %time a car needs from one intersection to th
 if (display)
     %figure for map plotting
     fig1 = figure(1);
+    set(fig1, 'Position', [10 10 800 800]);
     load('colormaps/colormap4', 'mycmap');
     set(fig1, 'Colormap', mycmap);
     titlestring = sprintf('Car density = %g, pedestrian density = %g',car_density, pedestrian_density);

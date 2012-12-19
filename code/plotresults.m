@@ -57,9 +57,10 @@ for di=1:max(size(d))
     end
 end
 
-fig2 = figure(2);
+% fig2 = figure(2);
 %is city map is a mix of roundabout and crossroads, plot distribution
 if ( mix )
+    fig2 = figure(2);
     %plot relative number of cars at roundabouts and number of cars at
     %crossroads versus traffic density
     subplot(2,1,2);
@@ -73,59 +74,59 @@ if ( mix )
     subplot(2,1,1);
 end
 
-%plot traffic flow versus traffic density
-hold on;
-% size(avFlow)
-for i=1:length(pd)
-    pd(i);
-    avFlow_pdi = avFlow(i,:);
-    plot(d,avFlow_pdi, '-x');
-end
-% plot(d,avFlow(:,:), '-o')
-set(gca,'FontSize',16);
-title('Traffic Dynamics');
-xlabel('traffic density');
-ylabel('average traffic flow');
-%ylim([0 0.5]);
-
-fig3 = figure(3);
-hold on;
-for i=1:length(d)
-    d(i);
-    avFlow_di = avFlow(:,i);
-    plot(pd,avFlow_di, '-x');
-end
-% plot(pd,avFlow(:,:), '-o')
-set(gca,'FontSize',16);
-title('Traffic Dynamics');
-xlabel('pedestrian density');
-ylabel('average traffic flow');
-
-
-fig4 = figure(4);
-hold on;
-for i=1:length(pd)
-    pd(i);
-    avSpeed_pdi = avSpeed(i,:);
-    plot(d,avSpeed_pdi, '-x');
-end
-set(gca,'FontSize',16);
-title('Traffic Dynamics');
-xlabel('traffic density');
-ylabel('average speed');
-
-
-fig5 = figure(5);
-hold on;
-for i=1:length(d)
-    d(i);
-    avSpeed_di = avSpeed(:,i);
-    plot(pd,avSpeed_di, '-x');
-end
-set(gca,'FontSize',16);
-title('Traffic Dynamics');
-xlabel('pedestrian density');
-ylabel('average speed');
+% %plot traffic flow versus traffic density
+% hold on;
+% % size(avFlow)
+% for i=1:length(pd)
+%     pd(i);
+%     avFlow_pdi = avFlow(i,:);
+%     plot(d,avFlow_pdi, '-x');
+% end
+% % plot(d,avFlow(:,:), '-o')
+% set(gca,'FontSize',16);
+% title('Traffic Dynamics');
+% xlabel('traffic density');
+% ylabel('average traffic flow');
+% %ylim([0 0.5]);
+% 
+% fig3 = figure(3);
+% hold on;
+% for i=1:length(d)
+%     d(i);
+%     avFlow_di = avFlow(:,i);
+%     plot(pd,avFlow_di, '-x');
+% end
+% % plot(pd,avFlow(:,:), '-o')
+% set(gca,'FontSize',16);
+% title('Traffic Dynamics');
+% xlabel('pedestrian density');
+% ylabel('average traffic flow');
+% 
+% 
+% fig4 = figure(4);
+% hold on;
+% for i=1:length(pd)
+%     pd(i);
+%     avSpeed_pdi = avSpeed(i,:);
+%     plot(d,avSpeed_pdi, '-x');
+% end
+% set(gca,'FontSize',16);
+% title('Traffic Dynamics');
+% xlabel('traffic density');
+% ylabel('average speed');
+% 
+% 
+% fig5 = figure(5);
+% hold on;
+% for i=1:length(d)
+%     d(i);
+%     avSpeed_di = avSpeed(:,i);
+%     plot(pd,avSpeed_di, '-x');
+% end
+% set(gca,'FontSize',16);
+% title('Traffic Dynamics');
+% xlabel('pedestrian density');
+% ylabel('average speed');
 
 fig6 = figure(6);
 surf(d,pd,avSpeed);

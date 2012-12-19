@@ -54,8 +54,8 @@ if  ( show == 'y' || show == 'n' )  %if show == 'y' -> simulation with graphic o
     if (video)
         car_densities = mat2str(d);
         pedestrian_densities = mat2str(pd);
-        filename = sprintf('../videos/video_(%g x %g)_%s_%s.avi', c_m, c_n, ...
-            car_densities, pedestrian_densities);
+        filename = sprintf('../videos/video_(%g x %g)_%s_%s_%s.avi', c_m, c_n, ...
+            car_densities, pedestrian_densities, mat2str(c));
         vidObj = VideoWriter(filename);
         open(vidObj);
     else
